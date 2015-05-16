@@ -1,0 +1,4 @@
+
+
+class Vault(object):
+    pass
