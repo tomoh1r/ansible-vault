@@ -10,6 +10,8 @@ def _read(fname):
 setup(
     name='ansible-vault',
     version='1.0.0',
+    author='Tomohiro NAKAMURA',
+    author_email='quickness.net@gmail.com',
     description='R/W an ansible-vault yaml file',
     long_description=_read('README.rst'),
     package=['ansible_vault'],
