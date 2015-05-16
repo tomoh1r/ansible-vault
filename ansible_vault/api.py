@@ -15,7 +15,10 @@ class Vault(object):
 
     def dump(self, data, stream=None):
         '''encrypt data and print stdout or write to stream'''
-        yaml_text = yaml.dump(data, default_flow_style=False)
+        yaml_text = yaml.dump(
+            data,
+            default_flow_style=False,
+            allow_unicode=True)
         encrypted = self.vault.encrypt(yaml_text)
         if stream:
             stream.write(encrypted)
