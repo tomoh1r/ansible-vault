@@ -9,13 +9,13 @@ def _read(fname):
 
 setup(
     name='ansible-vault',
-    version='0.0.1-alpha',
+    version='1.0.0',
     description='R/W an ansible-vault yaml file',
     long_description=_read('README.rst'),
     package=['ansible_vault'],
     install_requires=['ansible'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
     license='GPLv3',
