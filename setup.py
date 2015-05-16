@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def _read(fname):
@@ -9,12 +9,13 @@ def _read(fname):
 
 setup(
     name='ansible-vault',
-    version='1.0.0',
+    version='1.0.1',
     author='Tomohiro NAKAMURA',
     author_email='quickness.net@gmail.com',
+    url='https://github.com/jptomo/ansible-vault',
     description='R/W an ansible-vault yaml file',
     long_description=_read('README.rst'),
-    package=['ansible_vault'],
+    packages=find_packages('ansible_vault'),
     install_requires=['ansible'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
