@@ -19,7 +19,7 @@ When you have an ansible-vault file, then you can read file. See below.
    from ansible_vault import Vault
 
    vault = Vault('password')
-   data = Vault.load(open('vault.yml').read())
+   data = vault.load(open('vault.yml').read())
 
 When you have to write data, then you can write data to file. See below.
 
@@ -28,7 +28,7 @@ When you have to write data, then you can write data to file. See below.
    from ansible_vault import Vault
 
    vault = Vault('password')
-   Vault.dump(data, open('vault.yml', 'w'))
+   vault.dump(data, open('vault.yml', 'w'))
 
    # also you can get encrypted text
-   print(Vault.dump(data))
+   print(vault.dump(data))

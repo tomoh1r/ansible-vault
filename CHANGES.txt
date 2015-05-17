@@ -1,3 +1,7 @@
+1.0.3 (2015/05/18)
+
+* fix README.rst typo
+
 1.0.2 (2015/05/18)
 
 * shipped with python modules
