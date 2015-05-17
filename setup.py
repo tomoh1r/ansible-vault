@@ -9,13 +9,13 @@ def _read(fname):
 
 setup(
     name='ansible-vault',
-    version='1.0.1',
+    version='1.0.2',
     author='Tomohiro NAKAMURA',
     author_email='quickness.net@gmail.com',
     url='https://github.com/jptomo/ansible-vault',
     description='R/W an ansible-vault yaml file',
     long_description=_read('README.rst'),
-    packages=find_packages('ansible_vault'),
+    packages=find_packages(),
     install_requires=['ansible'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
