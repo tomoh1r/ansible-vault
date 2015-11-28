@@ -32,7 +32,7 @@ class PyTest(TestCommand):
 
 setup(
     name='ansible-vault',
-    version='1.0.3',
+    version='1.0.4',
     author='Tomohiro NAKAMURA',
     author_email='quickness.net@gmail.com',
     url='https://github.com/jptomo/ansible-vault',

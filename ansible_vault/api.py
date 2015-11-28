@@ -1,5 +1,9 @@
 import yaml
-from ansible.utils.vault import VaultLib
+try:
+    from ansible.utils.vault import VaultLib
+except ImportError:
+    # Ansible 2.0 has changed the vault location
+    from ansible.parsing.vault import VaultLib
 
 
 class Vault(object):
