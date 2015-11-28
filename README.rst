@@ -7,8 +7,6 @@ ansible-vault
 
 This project aim to R/W an ansible-vault yaml file
 
-(This package develop with Ansible version 1.9.1's ansible-vault.)
-
 You can install with pip.
 
 .. code-block:: console
