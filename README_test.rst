@@ -12,4 +12,5 @@ how to test
 
    .. code-block:: console
 
+      $ ./venvtest/bin/python setup.py setup_test
       $ ./venvtest/bin/python setup.py test

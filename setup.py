@@ -32,19 +32,21 @@ class PyTest(TestCommand):
 
 setup(
     name='ansible-vault',
-    version='1.0.4',
+    version='1.0.5',
     author='Tomohiro NAKAMURA',
     author_email='quickness.net@gmail.com',
-    url='https://github.com/jptomo/ansible-vault',
+    url='https://github.com/tomoh1r/ansible-vault',
     description='R/W an ansible-vault yaml file',
     long_description=_read('README.rst'),
     packages=find_packages(),
     install_requires=['ansible'],
-    tests_require=['pytest', 'testfixtures'],
     cmdclass={'test': PyTest},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
     license='GPLv3',
+    extras_require = {
+        'test': ['pytest', 'testfixtures'],
+    }
 )

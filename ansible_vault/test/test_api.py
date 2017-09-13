@@ -1,9 +1,9 @@
 import os
 from tempfile import mkstemp
 
-from testfixtures import ShouldRaise
-
 from ansible.errors import AnsibleError
+from testfixtures import ShouldRaise
+from yaml.constructor import ConstructorError
 
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +26,12 @@ class TestVaultLoad(object):
         fpath = os.path.join(here, 'file', 'vault.txt')
         vault = self._makeOne('invalid-password')
         with ShouldRaise(AnsibleError('Decryption failed')):
+            vault.load(open(fpath).read())
+
+    def test_not_pwned(self):
+        fpath = os.path.join(here, 'file', 'pwned.txt')
+        vault = self._makeOne('password')
+        with ShouldRaise(ConstructorError):
             vault.load(open(fpath).read())
 
 

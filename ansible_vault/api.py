@@ -15,7 +15,7 @@ class Vault(object):
 
     def load(self, stream):
         '''read vault steam and return python object'''
-        return yaml.load(self.vault.decrypt(stream))
+        return yaml.safe_load(self.vault.decrypt(stream))
 
     def dump(self, data, stream=None):
         '''encrypt data and print stdout or write to stream'''

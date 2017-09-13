@@ -2,8 +2,8 @@
 ansible-vault
 =============
 
-.. image:: https://travis-ci.org/jptomo/ansible-vault.svg?branch=master
-   :target: https://travis-ci.org/jptomo/ansible-vault
+.. image:: https://travis-ci.org/tomoh1r/ansible-vault.svg?branch=master
+   :target: https://travis-ci.org/tomoh1r/ansible-vault
 
 This project aim to R/W an ansible-vault yaml file
 
