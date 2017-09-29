@@ -6,14 +6,15 @@ cache:
     - $HOME/.cache/pip
 python:
   - "2.7"
-  - "3.3"
-  - "3.4"
   - "3.5"
   - "3.6"
 install:
   - python -m pip install -U setuptools pip
-  - python setup.py setup_test
+  - python -m pip install -U pytest
 script:
+  - python -m pip install -U ansible
+  - python -m pytest
+  - python -m pip install -U 'ansible<2.4.0'
   - python -m pytest
   - if [ "$TRAVIS_PYTHON_VERSION" == '2.7' ] ; then python -m pip install -U 'ansible<2.0.0' && python -m pytest ; fi
 
