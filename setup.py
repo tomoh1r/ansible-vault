@@ -10,15 +10,18 @@ def _read(fname):
 
 setup(
     name='ansible-vault',
-    version='1.1.0',
+    version='1.1.1',
     author='Tomohiro NAKAMURA',
     author_email='quickness.net@gmail.com',
     url='https://github.com/tomoh1r/ansible-vault',
     description='R/W an ansible-vault yaml file',
     long_description=_read('README.rst'),
-    packages=find_packages('ansible_vault'),
+    packages=find_packages(),
     install_requires=['ansible'],
     classifiers=[
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
