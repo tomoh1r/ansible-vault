@@ -29,7 +29,10 @@ When you have to write data, then you can write data to file. See below.
    from ansible_vault import Vault
 
    vault = Vault('password')
+   #Python 2.x
    vault.dump(data, open('vault.yml', 'w'))
+   #Python 3.x
+   vault.dump(data, open('vault.yml', 'wb'))
 
    # also you can get encrypted text
    print(vault.dump(data))
