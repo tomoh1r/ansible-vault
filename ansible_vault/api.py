@@ -18,6 +18,7 @@ from __future__ import absolute_import
 
 import ansible
 import yaml
+import six
 try:
     from ansible.parsing.vault import VaultLib
 except ImportError:
@@ -56,6 +57,8 @@ class Vault(object):
             default_flow_style=False,
             allow_unicode=True)
         encrypted = self.vault.encrypt(yaml_text)
+        if six.PY3: # Handle Python3 Bytestring
+            encrypted = encrypted.decode('utf-8')
         if stream:
             stream.write(encrypted)
         else:
