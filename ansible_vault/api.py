@@ -18,12 +18,13 @@ from __future__ import absolute_import
 
 import ansible
 import yaml
-import six
 try:
     from ansible.parsing.vault import VaultLib
 except ImportError:
     # Ansible<2.0
     from ansible.utils.vault import VaultLib
+
+from ._compat import PY3
 
 
 _ansible_ver = float('.'.join(ansible.__version__.split('.')[:2]))
@@ -57,7 +58,7 @@ class Vault(object):
             default_flow_style=False,
             allow_unicode=True)
         encrypted = self.vault.encrypt(yaml_text)
-        if six.PY3: # Handle Python3 Bytestring
+        if PY3:
             encrypted = encrypted.decode('utf-8')
         if stream:
             stream.write(encrypted)
