@@ -1,3 +1,7 @@
+x.x.x (2018/0X/XX)
+
+* Merge p-r #12 and it derive an incompatibility.
+
 1.1.1 (2017/10/03)
 
 * Fix setup.py.

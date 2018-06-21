@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+from __future__ import absolute_import, unicode_literals
+
 import pytest
 from yaml.constructor import ConstructorError
 
@@ -63,7 +65,7 @@ class TestVaultDump(object):
         fp = tmpdir.join('vault.txt')
         self._makeOne(secret).dump(plaintext, fp)
 
-        assert decrypt_text(fp.read(), secret) == plaintext + '\n...\n'
+        assert decrypt_text(fp.read(), secret) == "!!python/unicode 'test'\n"
 
     def test_dump_text(self):
         plaintext = 'test'
@@ -71,4 +73,4 @@ class TestVaultDump(object):
 
         dumped = self._makeOne(secret).dump(plaintext)
 
-        assert decrypt_text(dumped, secret) == plaintext + '\n...\n'
+        assert decrypt_text(dumped, secret) == "!!python/unicode 'test'\n"
