@@ -48,7 +48,7 @@ class Vault(object):
     def load(self, stream):
         '''read vault steam and return python object'''
         return yaml.safe_load(self.vault.decrypt(stream))
-    
+
     def load_raw(self, stream):
         '''read vault stream and return raw data'''
         return self.vault.decrypt(stream)
@@ -63,10 +63,10 @@ class Vault(object):
         if stream:
             stream.write(encrypted)
         else:
-            return encrypted      
-        
+            return encrypted
+
     def dump_raw(self, text, stream=None):
-         '''encrypt raw data and write to stream'''
+        '''encrypt raw data and write to stream'''
         encrypted = self.vault.encrypt(text)
         if stream:
             stream.write(encrypted)
