@@ -1,21 +1,43 @@
 ---
-language: python
-sudo: false
-cache:
-  directories:
-    - $HOME/.cache/pip
-python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-install:
-  - python -m pip install -U setuptools pip
-  - python -m pip install -U pytest
-script:
-  - python -m pip install -U ansible
-  - python -m pytest
-  - python -m pip install -U 'ansible<2.4.0'
-  - python -m pytest
-  - if [ "$TRAVIS_PYTHON_VERSION" == '2.7' ] ; then python -m pip install -U 'ansible<2.0.0' && python -m pytest ; fi
+sudo: required
 
+language: python
+
+services:
+  - docker
+
+matrix:
+  include:
+    - name: "Python 2.7 with Ansible<2.0.0"
+      env:
+        - PY_VER: "2.7"
+    - name: "Python 3.5"
+      env:
+        - PY_VER: "3.5"
+    - name: "Python 3.6"
+      env:
+        - PY_VER: "3.6"
+    - name: "Python 3.7"
+      env:
+        - PY_VER: "3.7"
+
+before_install:
+  - docker pull "python:${PY_VER}-stretch"
+
+script:
+  - >-
+    docker run
+    -v $PWD:/root/src
+    --rm
+    "python:${PY_VER}-stretch"
+    /bin/sh -c
+    "chown -R root: /root/.cache/pip;
+    chmod -R 0755 /root/.cache/pip;
+    cd /root/src;
+    pip install -U setuptools pip;
+    pip install -U pytest;
+    if [ "$PY_VER" = "2.7" ] ; then pip install -U 'ansible<2.0.0' ; fi;
+    pip install -e .[test];
+    pytest"
+...
 # vim:st=2 sts=2 sw=2:
