@@ -7,7 +7,7 @@ ansible-vault
 
 This project aim to R/W an ansible-vault yaml file.
 
-*This is not Ansible official project.*
+**This is not Ansible official project.**
 
 You can install with pip.
 
