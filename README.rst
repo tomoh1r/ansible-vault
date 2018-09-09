@@ -5,7 +5,9 @@ ansible-vault
 .. image:: https://travis-ci.org/tomoh1r/ansible-vault.svg?branch=master
    :target: https://travis-ci.org/tomoh1r/ansible-vault
 
-This project aim to R/W an ansible-vault yaml file
+This project aim to R/W an ansible-vault yaml file.
+
+*This is not Ansible official project.*
 
 You can install with pip.
 
