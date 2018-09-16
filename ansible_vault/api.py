@@ -45,30 +45,26 @@ class Vault(object):
         from ansible.parsing.vault import VaultSecret
         return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
 
-    def load(self, stream):
-        '''read vault steam and return python object'''
-        return yaml.safe_load(self.vault.decrypt(stream))
-
     def load_raw(self, stream):
-        '''read vault stream and return raw data'''
+        """Read vault stream and return raw data."""
         return self.vault.decrypt(stream)
 
-    def dump(self, data, stream=None):
-        '''encrypt data and print stdout or write to stream'''
-        yaml_text = yaml.dump(
-            data,
-            default_flow_style=False,
-            allow_unicode=True)
-        encrypted = self.vault.encrypt(yaml_text)
-        if stream:
-            stream.write(encrypted)
-        else:
-            return encrypted
-
     def dump_raw(self, text, stream=None):
-        '''encrypt raw data and write to stream'''
+        """Encrypt raw data and write to stream."""
         encrypted = self.vault.encrypt(text)
         if stream:
             stream.write(encrypted)
         else:
             return encrypted
+
+    def load(self, stream):
+        """Read vault steam and return python object."""
+        return yaml.safe_load(self.load_raw(stream))
+
+    def dump(self, data, stream=None):
+        """Encrypt data and print stdout or write to stream."""
+        yaml_text = yaml.dump(
+            data,
+            default_flow_style=False,
+            allow_unicode=True)
+        return self.dump_raw(yaml_text, stream=stream)

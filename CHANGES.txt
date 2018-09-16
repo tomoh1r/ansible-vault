@@ -1,3 +1,7 @@
+1.2.0 (2018/09/16)
+
+* Add load_raw()/dump_raw() method.
+
 1.1.2 (2018/09/09)
 
 * Add setup classifiers Python 3.7.
