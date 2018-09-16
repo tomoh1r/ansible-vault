@@ -16,13 +16,18 @@
 #
 from __future__ import absolute_import, unicode_literals
 
+import sys
+
 import pytest
 from yaml.constructor import ConstructorError
 
 from ansible_vault.testing import decrypt_text
 
 
-class TestVaultLoad(object):
+PY3 = sys.version_info[0] > 2
+
+
+class _TestBase(object):
     def _getTargetClass(self):
         from ansible_vault import Vault
         return Vault
@@ -30,6 +35,48 @@ class TestVaultLoad(object):
     def _makeOne(self, password):
         return self._getTargetClass()(password)
 
+
+class TestVaultLoadRaw(_TestBase):
+    def test_can(self, vaulted_fp):
+        actual = self._makeOne('password').load_raw(vaulted_fp.read())
+        expected = 'test\n...\n'
+        if PY3:
+            expected = expected.encode('utf-8')
+        assert actual == expected
+
+    def test_cannot(self, ansible_ver, vaulted_fp):
+        if ansible_ver < 2.4:
+            from ansible.errors import AnsibleError as cls
+            msg = 'Decryption failed'
+        else:
+            from ansible.parsing.vault import AnsibleVaultError as cls
+            msg = ('Decryption failed '
+                   '(no vault secrets would found that could decrypt)')
+
+        with pytest.raises(cls, message=msg):
+            self._makeOne('invalid-password').load_raw(vaulted_fp.read())
+
+
+class TestVaultDumpRaw(_TestBase):
+    def test_dump_file(self, tmpdir):
+        plaintext = 'test'
+        secret = 'password'
+
+        fp = tmpdir.join('vault.txt')
+        self._makeOne(secret).dump_raw(plaintext, fp)
+
+        assert decrypt_text(fp.read(), secret) == plaintext
+
+    def test_dump_text(self):
+        plaintext = 'test'
+        secret = 'password'
+
+        dumped = self._makeOne(secret).dump_raw(plaintext)
+
+        assert decrypt_text(dumped, secret) == plaintext
+
+
+class TestVaultLoad(_TestBase):
     def test_can(self, vaulted_fp):
         assert self._makeOne('password').load(vaulted_fp.read()) == 'test'
 
@@ -50,14 +97,7 @@ class TestVaultLoad(object):
             self._makeOne('password').load(pwned_fp.read())
 
 
-class TestVaultDump(object):
-    def _getTargetClass(self):
-        from ansible_vault import Vault
-        return Vault
-
-    def _makeOne(self, password):
-        return self._getTargetClass()(password)
-
+class TestVaultDump(_TestBase):
     def test_dump_file(self, tmpdir):
         plaintext = 'test'
         secret = 'password'
@@ -65,7 +105,8 @@ class TestVaultDump(object):
         fp = tmpdir.join('vault.txt')
         self._makeOne(secret).dump(plaintext, fp)
 
-        assert decrypt_text(fp.read(), secret) == "!!python/unicode 'test'\n"
+        actual = decrypt_text(fp.read(), secret)
+        assert actual == "test\n...\n"
 
     def test_dump_text(self):
         plaintext = 'test'
@@ -73,4 +114,5 @@ class TestVaultDump(object):
 
         dumped = self._makeOne(secret).dump(plaintext)
 
-        assert decrypt_text(dumped, secret) == "!!python/unicode 'test'\n"
+        actual = decrypt_text(dumped, secret)
+        assert actual == "test\n...\n"

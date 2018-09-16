@@ -1,6 +1,14 @@
-x.x.x (2018/0X/XX)
+2.0.0 (2018/0X/XX)
 
-* Merge p-r #12 and it derive an incompatibility.
+* Merge p-r #12/#14 and it derive an incompatibility.
+
+1.2.0 (2018/09/16)
+
+* Add load_raw()/dump_raw() method.
+
+1.1.2 (2018/09/09)
+
+* Add setup classifiers Python 3.7.
 
 1.1.1 (2017/10/03)
 
