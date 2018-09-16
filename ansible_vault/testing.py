@@ -14,53 +14,52 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-import sys
 import os
 import shlex
 import subprocess
+import sys
 import tempfile
+
+_PY2 = sys.version_info[0] <= 2
 
 
 class AnsibleVaultExecutor(object):
     def get_version(self):
         import ansible
-        return float('.'.join(ansible.__version__.split('.')[:2]))
+
+        return float(".".join(ansible.__version__.split(".")[:2]))
 
     def get_executor(self):
-        return os.path.join(os.path.dirname(sys.executable), 'ansible-vault')
+        return os.path.join(os.path.dirname(sys.executable), "ansible-vault")
 
     def encrypt(self, pass_path, plain_fpath):
-        pass_opt = 'vault-password-file'
+        pass_opt = "vault-password-file"
         if self.get_version() >= 2.4:
-            pass_opt = 'vault-id'
+            pass_opt = "vault-id"
 
-        args = ('encrypt --{pass_opt}={pass_path} {plain_fpath}'
-                .format(pass_opt=pass_opt,
-                        pass_path=pass_path,
-                        plain_fpath=plain_fpath))
-        subprocess.check_output(
-            shlex.split(' '.join([self.get_executor(), args])))
+        args = "encrypt --{pass_opt}={pass_path} {plain_fpath}".format(
+            pass_opt=pass_opt, pass_path=pass_path, plain_fpath=plain_fpath
+        )
+        subprocess.check_output(shlex.split(" ".join([self.get_executor(), args])))
 
     def decrypt(self, pass_path, vault_fpath):
-        pass_opt = 'vault-password-file'
+        pass_opt = "vault-password-file"
         if self.get_version() >= 2.4:
-            pass_opt = 'vault-id'
+            pass_opt = "vault-id"
 
-        args = ('decrypt --{pass_opt}={pass_path} {vault_fpath}'
-                .format(pass_opt=pass_opt,
-                        pass_path=pass_path,
-                        vault_fpath=vault_fpath))
-        subprocess.check_output(
-            shlex.split(' '.join([self.get_executor(), args])))
+        args = "decrypt --{pass_opt}={pass_path} {vault_fpath}".format(
+            pass_opt=pass_opt, pass_path=pass_path, vault_fpath=vault_fpath
+        )
+        subprocess.check_output(shlex.split(" ".join([self.get_executor(), args])))
 
 
 def encrypt_text(plaintext, secret, vault_id=None):
     _, plain_fpath = tempfile.mkstemp()
-    with open(plain_fpath, 'w') as fp:
+    with open(plain_fpath, "w") as fp:
         fp.write(plaintext)
 
     _, pass_path = tempfile.mkstemp()
-    with open(pass_path, 'w') as fp:
+    with open(pass_path, "w") as fp:
         fp.write(secret)
 
     try:
@@ -76,13 +75,15 @@ def encrypt_text(plaintext, secret, vault_id=None):
 
 def decrypt_text(vaulttext, secret):
     _, vault_fpath = tempfile.mkstemp()
-    with open(vault_fpath, 'w') as fp:
-        if isinstance(vaulttext, bytes):
-            vaulttext = vaulttext.decode('utf-8')
+    with open(vault_fpath, "w") as fp:
+        if _PY2 and isinstance(vaulttext, str):
+            vaulttext = vaulttext.decode("utf-8")
+        elif not _PY2 and isinstance(vaulttext, bytes):
+            vaulttext = vaulttext.decode("utf-8")
         fp.write(vaulttext)
 
     _, pass_path = tempfile.mkstemp()
-    with open(pass_path, 'w') as fp:
+    with open(pass_path, "w") as fp:
         fp.write(secret)
 
     try:

@@ -23,13 +23,13 @@ from yaml.constructor import ConstructorError
 
 from ansible_vault.testing import decrypt_text
 
-
-PY3 = sys.version_info[0] > 2
+_PY2 = sys.version_info[0] <= 2
 
 
 class _TestBase(object):
     def _getTargetClass(self):
         from ansible_vault import Vault
+
         return Vault
 
     def _makeOne(self, password):
@@ -38,38 +38,40 @@ class _TestBase(object):
 
 class TestVaultLoadRaw(_TestBase):
     def test_can(self, vaulted_fp):
-        actual = self._makeOne('password').load_raw(vaulted_fp.read())
-        expected = 'test\n...\n'
-        if PY3:
-            expected = expected.encode('utf-8')
+        actual = self._makeOne("password").load_raw(vaulted_fp.read())
+        expected = "test\n...\n"
+        if not _PY2:
+            expected = expected.encode("utf-8")
         assert actual == expected
 
     def test_cannot(self, ansible_ver, vaulted_fp):
         if ansible_ver < 2.4:
             from ansible.errors import AnsibleError as cls
-            msg = 'Decryption failed'
+
+            msg = "Decryption failed"
         else:
             from ansible.parsing.vault import AnsibleVaultError as cls
-            msg = ('Decryption failed '
-                   '(no vault secrets would found that could decrypt)')
 
-        with pytest.raises(cls, message=msg):
-            self._makeOne('invalid-password').load_raw(vaulted_fp.read())
+            msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
+
+        with pytest.raises(cls) as exc:
+            self._makeOne("invalid-password").load_raw(vaulted_fp.read())
+        assert str(exc.value) == msg
 
 
 class TestVaultDumpRaw(_TestBase):
     def test_dump_file(self, tmpdir):
-        plaintext = 'test'
-        secret = 'password'
+        plaintext = "test"
+        secret = "password"
 
-        fp = tmpdir.join('vault.txt')
+        fp = tmpdir.join("vault.txt")
         self._makeOne(secret).dump_raw(plaintext, fp)
 
         assert decrypt_text(fp.read(), secret) == plaintext
 
     def test_dump_text(self):
-        plaintext = 'test'
-        secret = 'password'
+        plaintext = "test"
+        secret = "password"
 
         dumped = self._makeOne(secret).dump_raw(plaintext)
 
@@ -78,41 +80,47 @@ class TestVaultDumpRaw(_TestBase):
 
 class TestVaultLoad(_TestBase):
     def test_can(self, vaulted_fp):
-        assert self._makeOne('password').load(vaulted_fp.read()) == 'test'
+        assert self._makeOne("password").load(vaulted_fp.read()) == "test"
 
     def test_cannot(self, ansible_ver, vaulted_fp):
         if ansible_ver < 2.4:
             from ansible.errors import AnsibleError as cls
-            msg = 'Decryption failed'
+
+            msg = "Decryption failed"
         else:
             from ansible.parsing.vault import AnsibleVaultError as cls
-            msg = ('Decryption failed '
-                   '(no vault secrets would found that could decrypt)')
 
-        with pytest.raises(cls, message=msg):
-            self._makeOne('invalid-password').load(vaulted_fp.read())
+            msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
+
+        with pytest.raises(cls) as exc:
+            self._makeOne("invalid-password").load(vaulted_fp.read())
+        assert str(exc.value) == msg
 
     def test_not_pwned(self, pwned_fp):
         with pytest.raises(ConstructorError):
-            self._makeOne('password').load(pwned_fp.read())
+            self._makeOne("password").load(pwned_fp.read())
 
 
 class TestVaultDump(_TestBase):
     def test_dump_file(self, tmpdir):
-        plaintext = 'test'
-        secret = 'password'
+        plaintext = "test"
+        secret = "password"
+        if _PY2:
+            plaintext = plaintext.encode("utf-8")
 
-        fp = tmpdir.join('vault.txt')
+        fp = tmpdir.join("vault.txt")
         self._makeOne(secret).dump(plaintext, fp)
 
-        actual = decrypt_text(fp.read(), secret)
-        assert actual == "test\n...\n"
+        expected = "test\n...\n"
+        assert decrypt_text(fp.read(), secret) == expected
 
     def test_dump_text(self):
-        plaintext = 'test'
-        secret = 'password'
+        plaintext = "test"
+        secret = "password"
+        if _PY2:
+            plaintext = plaintext.encode("utf-8")
 
         dumped = self._makeOne(secret).dump(plaintext)
 
-        actual = decrypt_text(dumped, secret)
-        assert actual == "test\n...\n"
+        expected = "test\n...\n"
+        assert decrypt_text(dumped, secret) == expected

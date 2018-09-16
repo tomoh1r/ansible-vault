@@ -14,21 +14,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+from __future__ import absolute_import, unicode_literals
+
+import os
+import subprocess
 import sys
 
-try:
-    from ansible.parsing.vault import VaultLib  # noqa
-except ImportError:
-    # Ansible<2.0
-    from ansible.utils.vault import VaultLib  # noqa
-
-
 _PY2 = sys.version_info[0] <= 2
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def decode_text(text):
-    if _PY2 and isinstance(text, str):
-        return text.decode("utf-8")
-    elif not _PY2 and isinstance(text, bytes):
-        return text.decode("utf-8")
-    return text
+def test_isort(monkeypatch):
+    if _PY2:
+        # isort only support py3.
+        return
+
+    monkeypatch.chdir(_ROOT)
+    stdout = subprocess.run(
+        [sys.executable, "-m", "isort", "-vb", "-c", "-rc", "."], stdout=subprocess.PIPE
+    ).stdout
+
+    assert "ERROR" not in str(stdout), "Please run `./venv/bin/python3 -m isort -rc .`."

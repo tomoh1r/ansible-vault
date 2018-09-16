@@ -1,45 +1,52 @@
 ---
-sudo: required
-
 language: python
-
-services:
-  - docker
+cache: pip
 
 matrix:
   include:
     - name: "Python 2.7 with Ansible<2.0.0"
+      os: "linux"
+      python: "2.7"
       env:
-        - PY_VER: "2.7"
-        - PIP_BIN: pip2
+        - IS_PY2: "1"
+        - PYTHON_BIN: "python"
     - name: "Python 3.5"
+      os: "linux"
+      python: "3.5"
       env:
-        - PY_VER: "3.5"
-        - PIP_BIN: pip3
+        - IS_PY2: "0"
+        - PYTHON_BIN: "python3"
     - name: "Python 3.6"
+      os: "linux"
+      python: "3.6"
       env:
-        - PY_VER: "3.6"
-        - PIP_BIN: pip3
+        - IS_PY2: "0"
+        - PYTHON_BIN: "python3"
     - name: "Python 3.7"
+      os: "linux"
+      dist: "xenial"
+      python: "3.7"
       env:
-        - PY_VER: "3.7"
-        - PIP_BIN: pip3
+        - IS_PY2: "0"
+        - PYTHON_BIN: "python3"
+    - name: "Python 3.8-dev"
+      os: "linux"
+      dist: "xenial"
+      python: "3.8-dev"
+      env:
+        - IS_PY2: "0"
+        - PYTHON_BIN: "python3"
 
-before_install:
-  - docker pull "python:${PY_VER}-stretch"
+install:
+  - $PYTHON_BIN -m pip install -U setuptools pip;
+  # python 2.7
+  - if [ $IS_PY2 -ne 1 ] ; then $PYTHON_BIN -m pip install -e .[dev] ; fi;
+  # python3.X
+  - if [ $IS_PY2 -eq 1 ] ; then $PYTHON_BIN -m pip install -U 'ansible<2.0.0' ; fi;
+  - if [ $IS_PY2 -eq 1 ] ; then $PYTHON_BIN setup.py install ; fi;
+  - if [ $IS_PY2 -eq 1 ] ; then $PYTHON_BIN -m pip install pytest ; fi;
 
 script:
-  - >-
-    docker run
-    -v $PWD:/root/src
-    --rm
-    "python:${PY_VER}-stretch"
-    /bin/sh -c
-    "cd /root/src;
-    $PIP_BIN install -U setuptools pip;
-    $PIP_BIN install -U pytest;
-    if [ "$PY_VER" = "2.7" ] ; then $PIP_BIN install -U 'ansible<2.0.0' ; fi;
-    $PIP_BIN install -e .[test];
-    pytest"
+  - $PYTHON_BIN -m pytest;
 ...
 # vim:st=2 sts=2 sw=2:

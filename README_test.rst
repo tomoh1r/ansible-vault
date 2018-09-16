@@ -2,15 +2,20 @@
 how to test
 ===========
 
-1. create virtualenv
+1. Create virtualenv.
 
    .. code-block:: console
 
       $ virtualenv venvtest
 
-2. run test
+2. Update dependencies.
 
    .. code-block:: console
 
-      $ ./venvtest/bin/python setup.py setup_test
-      $ ./venvtest/bin/py.test
+      $ ./venvtest/bin/python -m pip install -e '.[dev]'
+
+3. Run test.
+
+   .. code-block:: console
+
+      $ ./venvtest/bin/python -m pytest

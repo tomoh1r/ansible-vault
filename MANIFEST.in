@@ -1,1 +1,2 @@
+recursive-exclude ansible_vault testing.py
 prune test

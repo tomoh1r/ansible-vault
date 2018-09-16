@@ -14,21 +14,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+from __future__ import absolute_import, unicode_literals
+
+import os
+import subprocess
 import sys
 
-try:
-    from ansible.parsing.vault import VaultLib  # noqa
-except ImportError:
-    # Ansible<2.0
-    from ansible.utils.vault import VaultLib  # noqa
-
-
 _PY2 = sys.version_info[0] <= 2
+_PY35 = sys.version_info[0:2] == tuple([3.5])
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def decode_text(text):
-    if _PY2 and isinstance(text, str):
-        return text.decode("utf-8")
-    elif not _PY2 and isinstance(text, bytes):
-        return text.decode("utf-8")
-    return text
+def test_black(monkeypatch):
+    if _PY2 or _PY35:
+        # black only support py3.6 and more.
+        return
+
+    monkeypatch.chdir(_ROOT)
+    stderr = subprocess.run(
+        [sys.executable, "-m", "black", ".", "--check"], stderr=subprocess.PIPE
+    ).stderr
+    assert "reformatted" not in str(stderr), "Please run `./venv/bin/python3 -m black .`."
