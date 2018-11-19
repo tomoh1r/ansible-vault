@@ -112,3 +112,19 @@ class TestVaultDump(_TestBase):
         dumped = self._makeOne(secret).dump(plaintext)
 
         assert decrypt_text(dumped, secret) == plaintext + '\n...\n'
+
+    def test_dump_additional_parameters(self):
+        plaintext = 'test'
+        secret = 'password'
+
+        default_style_dumped = self._makeOne(secret).dump(plaintext, default_style='"')
+
+        assert decrypt_text(default_style_dumped, secret) == f'"{plaintext}"\n'
+
+        explicit_start_dumped = self._makeOne(secret).dump(plaintext, explicit_start=True)
+
+        assert decrypt_text(explicit_start_dumped, secret) == f'--- {plaintext}\n...\n'
+
+        canonical_dumped = self._makeOne(secret).dump(plaintext, canonical=True)
+
+        assert decrypt_text(canonical_dumped, secret) == f'---\n!!str "{plaintext}"\n'
