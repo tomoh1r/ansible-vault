@@ -83,6 +83,19 @@ class TestVaultDump(object):
         expected = "test\n...\n"
         assert decrypt_text(dumped, secret) == expected
 
+    def test_dump_additional_parameters(self, Vault, decrypt_text):
+        plaintext = "test"
+        secret = "password"
+
+        default_style_dumped = Vault.dump(plaintext, default_style='"')
+        assert decrypt_text(default_style_dumped, secret) == f'"{plaintext}"\n'
+
+        explicit_start_dumped = Vault.dump(plaintext, explicit_start=True)
+        assert decrypt_text(explicit_start_dumped, secret) == f"--- {plaintext}\n...\n"
+
+        canonical_dumped = Vault.dump(plaintext, canonical=True)
+        assert decrypt_text(canonical_dumped, secret) == f'---\n!!str "{plaintext}"\n'
+
 
 class TestCannotLoadWithInvalidPassword(object):
     @pytest.mark.parametrize("method_name", ["load_raw", "load"])
