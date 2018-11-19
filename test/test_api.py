@@ -119,12 +119,12 @@ class TestVaultDump(_TestBase):
 
         default_style_dumped = self._makeOne(secret).dump(plaintext, default_style='"')
 
-        assert decrypt_text(default_style_dumped, secret) == f'"{plaintext}"\n'
+        assert decrypt_text(default_style_dumped, secret) == '"{}"\n'.format(plaintext)
 
         explicit_start_dumped = self._makeOne(secret).dump(plaintext, explicit_start=True)
 
-        assert decrypt_text(explicit_start_dumped, secret) == f'--- {plaintext}\n...\n'
+        assert decrypt_text(explicit_start_dumped, secret) == '--- {}\n...\n'.format(plaintext)
 
         canonical_dumped = self._makeOne(secret).dump(plaintext, canonical=True)
 
-        assert decrypt_text(canonical_dumped, secret) == f'---\n!!str "{plaintext}"\n'
+        assert decrypt_text(canonical_dumped, secret) == '---\n!!str "{}"\n'.format(plaintext)
