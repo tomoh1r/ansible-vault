@@ -16,6 +16,7 @@
 #
 from __future__ import absolute_import
 
+import os
 import ansible
 import yaml
 try:
@@ -31,9 +32,16 @@ _ansible_ver = float('.'.join(ansible.__version__.split('.')[:2]))
 class Vault(object):
     '''R/W an ansible-vault yaml file'''
 
-    def __init__(self, password):
-        self._ansible_ver = _ansible_ver
+    def __init__(self, password=None):
 
+        # If no password was supplied, try loading from ENV var
+        if not password:
+            vaultfile = os.getenv('ANSIBLE_VAULT_PASSWORD_FILE',None)
+            if vaultfile:
+                with open(vaultfile, 'r') as vfh:
+                    password = vfh.read().rstrip()
+
+        self._ansible_ver = _ansible_ver
         self.secret = password.encode('utf-8')
         self.vault = VaultLib(self._make_secrets(self.secret))
 
