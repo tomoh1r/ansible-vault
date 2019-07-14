@@ -1,3 +1,9 @@
+2.0.0b1 (2019/07/15)
+
+* Merge p-r #12/#14 and it derive an incompatibility. This aim to be not require
+  the user to specify binary on file open.
+* Take in black, isort.
+
 1.2.0 (2018/09/16)
 
 * Add load_raw()/dump_raw() method.

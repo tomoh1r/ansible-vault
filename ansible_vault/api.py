@@ -18,31 +18,26 @@ from __future__ import absolute_import
 
 import ansible
 import yaml
-try:
-    from ansible.parsing.vault import VaultLib
-except ImportError:
-    # Ansible<2.0
-    from ansible.utils.vault import VaultLib
 
+from ._compat import VaultLib, decode_text
 
-_ansible_ver = float('.'.join(ansible.__version__.split('.')[:2]))
+_ANSIBLE_VER = float(".".join(ansible.__version__.split(".")[:2]))
 
 
 class Vault(object):
-    '''R/W an ansible-vault yaml file'''
+    """R/W an ansible-vault yaml file"""
 
     def __init__(self, password):
-        self._ansible_ver = _ansible_ver
-
-        self.secret = password.encode('utf-8')
+        self.secret = password.encode("utf-8")
         self.vault = VaultLib(self._make_secrets(self.secret))
 
     def _make_secrets(self, secret):
-        if self._ansible_ver < 2.4:
+        if _ANSIBLE_VER < 2.4:
             return secret
 
         from ansible.constants import DEFAULT_VAULT_ID_MATCH
         from ansible.parsing.vault import VaultSecret
+
         return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
 
     def load_raw(self, stream):
@@ -51,7 +46,7 @@ class Vault(object):
 
     def dump_raw(self, text, stream=None):
         """Encrypt raw data and write to stream."""
-        encrypted = self.vault.encrypt(text)
+        encrypted = decode_text(self.vault.encrypt(text))
         if stream:
             stream.write(encrypted)
         else:
@@ -63,8 +58,5 @@ class Vault(object):
 
     def dump(self, data, stream=None):
         """Encrypt data and print stdout or write to stream."""
-        yaml_text = yaml.dump(
-            data,
-            default_flow_style=False,
-            allow_unicode=True)
+        yaml_text = yaml.dump(data, default_flow_style=False, allow_unicode=True)
         return self.dump_raw(yaml_text, stream=stream)
