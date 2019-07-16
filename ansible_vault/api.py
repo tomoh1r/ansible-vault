@@ -38,7 +38,7 @@ class Vault(object):
         self.vault = VaultLib(self._make_secrets(self.secret))
         self.file_type = file_type
 
-        if file_type not in [self.FileTypes.JSON, self.FileTypes.YAML]:
+        if self.file_type not in [self.FileTypes.JSON, self.FileTypes.YAML]:
             raise Exception("Bad File Type: %s" % self.file_type)
 
     def _make_secrets(self, secret):
@@ -64,10 +64,10 @@ class Vault(object):
 
     def load(self, stream):
         """Read vault steam and return python object."""
-        if self.file_type == self.FileTypes.YAML:
-            result = yaml.safe_load(self.load_raw(stream))
-        else:
+        if self.file_type == self.FileTypes.JSON:
             result = json.loads(self.load_raw(stream))
+        else:
+            result = yaml.safe_load(self.load_raw(stream))
 
         return result
 
