@@ -33,7 +33,7 @@ class Vault(object):
         JSON = "json"
         YAML = "yaml"
 
-    def __init__(self, password, file_type=FileTypes.JSON):
+    def __init__(self, password, file_type=FileTypes.YAML):
         self.secret = password.encode("utf-8")
         self.vault = VaultLib(self._make_secrets(self.secret))
         self.file_type = file_type
