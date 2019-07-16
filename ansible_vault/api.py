@@ -36,11 +36,10 @@ class Vault(object):
     def __init__(self, password, file_type=FileTypes.JSON):
         self.secret = password.encode("utf-8")
         self.vault = VaultLib(self._make_secrets(self.secret))
+        self.file_type = file_type
 
         if file_type not in [self.FileTypes.JSON, self.FileTypes.YAML]:
             raise Exception("Bad File Type: %s" % self.file_type)
-
-        self.file_type = file_type
 
     def _make_secrets(self, secret):
         if _ANSIBLE_VER < 2.4:
