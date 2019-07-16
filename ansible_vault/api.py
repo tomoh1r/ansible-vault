@@ -16,6 +16,8 @@
 #
 from __future__ import absolute_import
 
+import json
+
 import ansible
 import yaml
 
@@ -27,9 +29,18 @@ _ANSIBLE_VER = float(".".join(ansible.__version__.split(".")[:2]))
 class Vault(object):
     """R/W an ansible-vault yaml file"""
 
-    def __init__(self, password):
+    class FileTypes:
+        JSON = "json"
+        YAML = "yaml"
+
+    def __init__(self, password, file_type=FileTypes.JSON):
         self.secret = password.encode("utf-8")
         self.vault = VaultLib(self._make_secrets(self.secret))
+
+        if file_type not in [self.FileTypes.JSON, self.FileTypes.YAML]:
+            raise Exception("Bad File Type: %s" % self.file_type)
+
+        self.file_type = file_type
 
     def _make_secrets(self, secret):
         if _ANSIBLE_VER < 2.4:
@@ -54,7 +65,12 @@ class Vault(object):
 
     def load(self, stream):
         """Read vault steam and return python object."""
-        return yaml.safe_load(self.load_raw(stream))
+        if self.file_type == self.FileTypes.YAML:
+            result = yaml.safe_load(self.load_raw(stream))
+        else:
+            result = json.loads(self.load_raw(stream))
+
+        return result
 
     def dump(self, data, stream=None):
         """Encrypt data and print stdout or write to stream."""
