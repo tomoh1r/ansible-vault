@@ -16,14 +16,22 @@
 #
 import sys
 
-try:
-    from ansible.parsing.vault import VaultLib  # noqa
-except ImportError:
-    # Ansible<2.0
-    from ansible.utils.vault import VaultLib  # noqa
+from ansible_vault._vendored import ansible
+from ansible_vault._vendored.ansible.parsing.vault import VaultLib  # noqa
 
+ANSIBLE_VERSION = float(".".join(ansible.__version__.split(".")[:2]))
 
 _PY2 = sys.version_info[0] <= 2
+
+
+def make_secrets(secret):
+    if ANSIBLE_VERSION < 2.4:
+        return secret
+
+    from ansible_vault._vendored.ansible.constants import DEFAULT_VAULT_ID_MATCH
+    from ansible_vault._vendored.ansible.parsing.vault import VaultSecret
+
+    return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
 
 
 def decode_text(text):
