@@ -20,21 +20,18 @@ import subprocess
 import sys
 import tempfile
 
+from ._compat import ANSIBLE_VERSION
+
 _PY2 = sys.version_info[0] <= 2
 
 
 class AnsibleVaultExecutor(object):
-    def get_version(self):
-        import ansible
-
-        return float(".".join(ansible.__version__.split(".")[:2]))
-
     def get_executor(self):
         return os.path.join(os.path.dirname(sys.executable), "ansible-vault")
 
     def encrypt(self, pass_path, plain_fpath):
         pass_opt = "vault-password-file"
-        if self.get_version() >= 2.4:
+        if ANSIBLE_VERSION >= 2.4:
             pass_opt = "vault-id"
 
         args = "encrypt --{pass_opt}={pass_path} {plain_fpath}".format(
@@ -44,7 +41,7 @@ class AnsibleVaultExecutor(object):
 
     def decrypt(self, pass_path, vault_fpath):
         pass_opt = "vault-password-file"
-        if self.get_version() >= 2.4:
+        if ANSIBLE_VERSION >= 2.4:
             pass_opt = "vault-id"
 
         args = "decrypt --{pass_opt}={pass_path} {vault_fpath}".format(

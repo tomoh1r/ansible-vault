@@ -16,12 +16,9 @@
 #
 from __future__ import absolute_import
 
-import ansible
 import yaml
 
-from ._compat import VaultLib, decode_text
-
-_ANSIBLE_VER = float(".".join(ansible.__version__.split(".")[:2]))
+from ._compat import VaultLib, decode_text, make_secrets
 
 
 class Vault(object):
@@ -29,16 +26,7 @@ class Vault(object):
 
     def __init__(self, password):
         self.secret = password.encode("utf-8")
-        self.vault = VaultLib(self._make_secrets(self.secret))
-
-    def _make_secrets(self, secret):
-        if _ANSIBLE_VER < 2.4:
-            return secret
-
-        from ansible.constants import DEFAULT_VAULT_ID_MATCH
-        from ansible.parsing.vault import VaultSecret
-
-        return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
+        self.vault = VaultLib(make_secrets(self.secret))
 
     def load_raw(self, stream):
         """Read vault stream and return raw data."""

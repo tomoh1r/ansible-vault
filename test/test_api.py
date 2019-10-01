@@ -45,14 +45,9 @@ class TestVaultLoadRaw(_TestBase):
         assert actual == expected
 
     def test_cannot(self, ansible_ver, vaulted_fp):
-        if ansible_ver < 2.4:
-            from ansible.errors import AnsibleError as cls
+        from ansible_vault._vendored.ansible.parsing.vault import AnsibleVaultError as cls
 
-            msg = "Decryption failed"
-        else:
-            from ansible.parsing.vault import AnsibleVaultError as cls
-
-            msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
+        msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
 
         with pytest.raises(cls) as exc:
             self._makeOne("invalid-password").load_raw(vaulted_fp.read())
@@ -83,14 +78,9 @@ class TestVaultLoad(_TestBase):
         assert self._makeOne("password").load(vaulted_fp.read()) == "test"
 
     def test_cannot(self, ansible_ver, vaulted_fp):
-        if ansible_ver < 2.4:
-            from ansible.errors import AnsibleError as cls
+        from ansible_vault._vendored.ansible.parsing.vault import AnsibleVaultError as cls
 
-            msg = "Decryption failed"
-        else:
-            from ansible.parsing.vault import AnsibleVaultError as cls
-
-            msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
+        msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
 
         with pytest.raises(cls) as exc:
             self._makeOne("invalid-password").load(vaulted_fp.read())

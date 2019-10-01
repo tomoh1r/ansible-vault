@@ -17,7 +17,7 @@ setup(
     description="R/W an ansible-vault yaml file",
     long_description=_read("README.rst"),
     packages=find_packages(),
-    install_requires=["ansible"],
+    install_requires=["cryptography"],
     classifiers=[
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.5",
@@ -29,7 +29,7 @@ setup(
     ],
     license="GPLv3",
     extras_require={
-        "dev": ["pytest"],
+        "dev": ["ansible", "pytest"],
         'dev:python_version>"2.7"': ["isort[pyproject]"],
         'dev:python_version>="3.6"': ["black"],
         "release": ["twine"],
