@@ -4,7 +4,7 @@ cache: pip
 
 matrix:
   include:
-    - name: "Python 2.7 with Ansible<2.0.0"
+    - name: "Python 2.7"
       os: "linux"
       python: "2.7"
       env:
@@ -38,15 +38,10 @@ matrix:
         - PYTHON_BIN: "python3"
 
 install:
-  - $PYTHON_BIN -m pip install -U setuptools pip;
-  # python 2.7
-  - if [ $IS_PY2 -ne 1 ] ; then $PYTHON_BIN -m pip install -e .[dev] ; fi;
-  # python3.X
-  - if [ $IS_PY2 -eq 1 ] ; then $PYTHON_BIN -m pip install -U 'ansible<2.0.0' ; fi;
-  - if [ $IS_PY2 -eq 1 ] ; then $PYTHON_BIN setup.py install ; fi;
-  - if [ $IS_PY2 -eq 1 ] ; then $PYTHON_BIN -m pip install pytest ; fi;
+  - $PYTHON_BIN -m pip install -U setuptools pip
+  - $PYTHON_BIN -m pip install -e .[dev]
 
 script:
-  - $PYTHON_BIN -m pytest;
+  - $PYTHON_BIN -m pytest
 ...
 # vim:st=2 sts=2 sw=2:
