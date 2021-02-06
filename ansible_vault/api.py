@@ -16,28 +16,25 @@
 #
 from __future__ import absolute_import
 
-import ansible
 import yaml
-from pkg_resources import parse_version
 
-from ._compat import VaultLib, decode_text
+from ._compat import decode_text
+from .parsing import AnsibleVaultLib
 
 
 class Vault(object):
     """R/W an ansible-vault yaml file"""
 
-    def __init__(self, password):
-        self.secret = password.encode("utf-8")
-        self.vault = VaultLib(self._make_secrets(self.secret))
+    def __init__(self, password=None, vault_lib=None):
+        if not any([password, vault_lib]):
+            raise ValueError("You should specify value to password or vault_lib.")
 
-    def _make_secrets(self, secret):
-        if parse_version(ansible.__version__) < parse_version("2.4"):
-            return secret
-
-        from ansible.constants import DEFAULT_VAULT_ID_MATCH
-        from ansible.parsing.vault import VaultSecret
-
-        return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
+        if password:
+            self.secret = password.encode("utf-8")
+            self.vault = AnsibleVaultLib(self.secret)
+        else:
+            self.secret = None
+            self.vault = vault_lib
 
     def load_raw(self, stream):
         """Read vault stream and return raw data."""

@@ -17,3 +17,4 @@
 from __future__ import absolute_import
 
 from .api import Vault  # noqa
+from .parsing import VaultLibABC  # noqa
