@@ -20,18 +20,13 @@ import os
 import subprocess
 import sys
 
-_PY2 = sys.version_info[0] <= 2
-_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import pytest
 
 
+@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
 def test_isort(monkeypatch):
-    if _PY2:
-        # isort only support py3.
-        return
-
-    monkeypatch.chdir(_ROOT)
+    monkeypatch.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     stdout = subprocess.run(
         [sys.executable, "-m", "isort", "-vb", "-c", "-rc", "."], stdout=subprocess.PIPE
     ).stdout
-
     assert "ERROR" not in str(stdout), "Please run `./venv/bin/python3 -m isort -rc .`."

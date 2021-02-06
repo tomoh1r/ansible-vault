@@ -19,6 +19,7 @@ from __future__ import absolute_import, unicode_literals
 import sys
 
 import pytest
+from pkg_resources import parse_version
 from yaml.constructor import ConstructorError
 
 from ansible_vault.testing import decrypt_text
@@ -37,26 +38,11 @@ class _TestBase(object):
 
 
 class TestVaultLoadRaw(_TestBase):
-    def test_can(self, vaulted_fp):
-        actual = self._makeOne("password").load_raw(vaulted_fp.read())
+    def test_it(self, vaulted_fp):
         expected = "test\n...\n"
         if not _PY2:
             expected = expected.encode("utf-8")
-        assert actual == expected
-
-    def test_cannot(self, ansible_ver, vaulted_fp):
-        if ansible_ver < 2.4:
-            from ansible.errors import AnsibleError as cls
-
-            msg = "Decryption failed"
-        else:
-            from ansible.parsing.vault import AnsibleVaultError as cls
-
-            msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
-
-        with pytest.raises(cls) as exc:
-            self._makeOne("invalid-password").load_raw(vaulted_fp.read())
-        assert str(exc.value) == msg
+        assert self._makeOne("password").load_raw(vaulted_fp.read()) == expected
 
 
 class TestVaultDumpRaw(_TestBase):
@@ -79,26 +65,9 @@ class TestVaultDumpRaw(_TestBase):
 
 
 class TestVaultLoad(_TestBase):
-    def test_can(self, vaulted_fp):
-        assert self._makeOne("password").load(vaulted_fp.read()) == "test"
-
-    def test_cannot(self, ansible_ver, vaulted_fp):
-        if ansible_ver < 2.4:
-            from ansible.errors import AnsibleError as cls
-
-            msg = "Decryption failed"
-        else:
-            from ansible.parsing.vault import AnsibleVaultError as cls
-
-            msg = "Decryption failed " "(no vault secrets were found that could decrypt)"
-
-        with pytest.raises(cls) as exc:
-            self._makeOne("invalid-password").load(vaulted_fp.read())
-        assert str(exc.value) == msg
-
-    def test_not_pwned(self, pwned_fp):
-        with pytest.raises(ConstructorError):
-            self._makeOne("password").load(pwned_fp.read())
+    def test_it(self, vaulted_fp):
+        expected = "test"
+        assert self._makeOne("password").load(vaulted_fp.read()) == expected
 
 
 class TestVaultDump(_TestBase):
@@ -124,3 +93,27 @@ class TestVaultDump(_TestBase):
 
         expected = "test\n...\n"
         assert decrypt_text(dumped, secret) == expected
+
+
+class TestCannotLoadWithInvalidPassword(_TestBase):
+    @pytest.mark.parametrize("method_name", ["load_raw", "load"])
+    def test_it(self, ansible_ver, vaulted_fp, method_name):
+        if ansible_ver < parse_version("2.4"):
+            from ansible.errors import AnsibleError as cls
+
+            msg = "Decryption failed"
+        else:
+            from ansible.parsing.vault import AnsibleVaultError as cls
+
+            msg = "Decryption failed (no vault secrets were found that could decrypt)"
+
+        inst = self._makeOne("invalid-password")
+        with pytest.raises(cls) as exc:
+            getattr(inst, method_name)(vaulted_fp.read())
+        assert str(exc.value) == msg
+
+
+class TestLoadIsNotpwned(_TestBase):
+    def test_it(self, pwned_fp):
+        with pytest.raises(ConstructorError):
+            self._makeOne("password").load(pwned_fp.read())

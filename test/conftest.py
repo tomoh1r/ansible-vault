@@ -17,13 +17,14 @@
 from textwrap import dedent
 
 import pytest
+from pkg_resources import parse_version
 
 
 @pytest.fixture(scope="session")
 def ansible_ver():
     import ansible
 
-    return float(".".join(ansible.__version__.split(".")[:2]))
+    return parse_version(ansible.__version__)
 
 
 @pytest.fixture(scope="function")
