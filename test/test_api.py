@@ -87,14 +87,17 @@ class TestVaultDump(object):
         plaintext = "test"
         secret = "password"
 
-        default_style_dumped = Vault.dump(plaintext, default_style='"')
-        assert decrypt_text(default_style_dumped, secret) == f'"{plaintext}"\n'
+        default_style_dumped = Vault(secret).dump(plaintext, default_style='"')
+        expected0 = '"{}"\n'.format(plaintext)
+        assert decrypt_text(default_style_dumped, secret) == expected0
 
-        explicit_start_dumped = Vault.dump(plaintext, explicit_start=True)
-        assert decrypt_text(explicit_start_dumped, secret) == f"--- {plaintext}\n...\n"
+        explicit_start_dumped = Vault(secret).dump(plaintext, explicit_start=True)
+        expected1 = "--- {}\n...\n".format(plaintext)
+        assert decrypt_text(explicit_start_dumped, secret) == expected1
 
-        canonical_dumped = Vault.dump(plaintext, canonical=True)
-        assert decrypt_text(canonical_dumped, secret) == f'---\n!!str "{plaintext}"\n'
+        canonical_dumped = Vault(secret).dump(plaintext, canonical=True)
+        expected2 = '---\n!!str "{}"\n'.format(plaintext)
+        assert decrypt_text(canonical_dumped, secret) == expected2
 
 
 class TestCannotLoadWithInvalidPassword(object):
