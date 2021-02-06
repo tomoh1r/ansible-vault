@@ -39,8 +39,12 @@ class AnsibleVaultLib(VaultLibABC):
 
     def __init__(self, secret):
         self.vault = VaultLib(make_secrets(secret))
-        self.encrypt = self.vault.encrypt
-        self.decrypt = self.vault.decrypt
+
+    def encrypt(self, plaintext):
+        return self.vault.encrypt(plaintext)
+
+    def decrypt(self, vaulttext):
+        return self.vault.decrypt(vaulttext)
 
 
 def make_secrets(secret):
