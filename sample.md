@@ -4,6 +4,8 @@
 
 ### Use ANSIBLE\_VAULT\_PASSWORD\_FILE
 
+Create your own VaultLib and use it with vault\_lib option.
+
 See [test\_password.py](https://github.com/tomoh1r/ansible-vault/blob/master/test/sample_vault/test_password.py).
 
 ```python
@@ -31,6 +33,8 @@ Vault(vault_lib=MyVaultLib()).load(open(fpath).read())
 
 ### PlainText
 
+Use load\_raw/dump\_raw method.
+
 See [test\_plain.py](https://github.com/tomoh1r/ansible-vault/blob/master/test/sample_io/test_plain.py).
 
 Read from the encrypted file.
@@ -55,6 +59,8 @@ with open(fpath, "w") as fp:
 ```
 
 ### JSON
+
+Use load\_raw/dump\_raw method and wrap with json module.
 
 See [test\_json.py](https://github.com/tomoh1r/ansible-vault/blob/master/test/sample_io/test_json.py).
 
