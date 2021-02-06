@@ -3,20 +3,6 @@ name: test
 on: [push, pull_request]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ansible-vault-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: ansible-vault-${{ runner.os }}-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
-      - uses: tomoh1r/ansible-vault/.github/actions/lint-it@master
-
   super-lint:
     runs-on: ubuntu-latest
     steps:
@@ -53,3 +39,5 @@ jobs:
         if: "matrix.python-version != '2.7'"
       - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze-v2@master
         if: "matrix.python-version == '2.7'"
+      - uses: tomoh1r/ansible-vault/.github/actions/lint-it@master
+        if: "matrix.python-version == '3.9'"
