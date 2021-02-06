@@ -31,11 +31,11 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: tomoh1r/ansible-vault/.github/actions/test-it@issue-26
+      - uses: tomoh1r/ansible-vault/.github/actions/test-it@master
         if: "matrix.python-version != '2.7'"
-      - uses: tomoh1r/ansible-vault/.github/actions/test-it-v2@issue-26
+      - uses: tomoh1r/ansible-vault/.github/actions/test-it-v2@master
         if: "matrix.python-version == '2.7'"
-      - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze@issue-26
+      - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze@master
         if: "matrix.python-version != '2.7'"
-      - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze-v2@issue-26
+      - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze-v2@master
         if: "matrix.python-version == '2.7'"
