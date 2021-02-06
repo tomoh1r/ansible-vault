@@ -22,8 +22,6 @@ import pytest
 from pkg_resources import parse_version
 from yaml.constructor import ConstructorError
 
-from ansible_vault.testing import decrypt_text
-
 _PY2 = sys.version_info[0] <= 2
 
 
@@ -36,6 +34,10 @@ class _TestBase(object):
     def _makeOne(self, password):
         return self._getTargetClass()(password)
 
+    @pytest.fixture()
+    def decrypt_text(self, testing):
+        return testing.decrypt_text
+
 
 class TestVaultLoadRaw(_TestBase):
     def test_it(self, vaulted_fp):
@@ -46,7 +48,7 @@ class TestVaultLoadRaw(_TestBase):
 
 
 class TestVaultDumpRaw(_TestBase):
-    def test_dump_file(self, tmpdir):
+    def test_dump_file(self, tmpdir, decrypt_text):
         plaintext = "test"
         secret = "password"
 
@@ -55,7 +57,7 @@ class TestVaultDumpRaw(_TestBase):
 
         assert decrypt_text(fp.read(), secret) == plaintext
 
-    def test_dump_text(self):
+    def test_dump_text(self, decrypt_text):
         plaintext = "test"
         secret = "password"
 
@@ -71,7 +73,7 @@ class TestVaultLoad(_TestBase):
 
 
 class TestVaultDump(_TestBase):
-    def test_dump_file(self, tmpdir):
+    def test_dump_file(self, tmpdir, decrypt_text):
         plaintext = "test"
         secret = "password"
         if _PY2:
@@ -83,7 +85,7 @@ class TestVaultDump(_TestBase):
         expected = "test\n...\n"
         assert decrypt_text(fp.read(), secret) == expected
 
-    def test_dump_text(self):
+    def test_dump_text(self, decrypt_text):
         plaintext = "test"
         secret = "password"
         if _PY2:

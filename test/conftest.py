@@ -14,10 +14,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+import os
+import sys
+from importlib import import_module
 from textwrap import dedent
 
 import pytest
 from pkg_resources import parse_version
+
+
+@pytest.fixture()
+def setup_testing_syspath(request):
+    bk_syspath = sys.path
+    _here = os.path.dirname(os.path.abspath(__file__))
+    sys.path.append(os.path.join(_here, "lib"))
+
+    def fin():
+        sys.path = bk_syspath
+
+    request.addfinalizer(fin)
+
+
+@pytest.fixture()
+def testing(setup_testing_syspath):
+    return import_module("testing")
 
 
 @pytest.fixture(scope="session")
