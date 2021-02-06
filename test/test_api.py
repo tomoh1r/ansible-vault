@@ -17,6 +17,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import sys
+from importlib import import_module
 
 import pytest
 from pkg_resources import parse_version
@@ -25,97 +26,81 @@ from yaml.constructor import ConstructorError
 _PY2 = sys.version_info[0] <= 2
 
 
-class _TestBase(object):
-    def _getTargetClass(self):
-        from ansible_vault import Vault
-
-        return Vault
-
-    def _makeOne(self, password):
-        return self._getTargetClass()(password)
-
-    @pytest.fixture()
-    def decrypt_text(self, testing):
-        return testing.decrypt_text
-
-
-class TestVaultLoadRaw(_TestBase):
-    def test_it(self, vaulted_fp):
+class TestVaultLoadRaw(object):
+    def test_it(self, Vault, vaulted_fp):
         expected = "test\n...\n"
         if not _PY2:
             expected = expected.encode("utf-8")
-        assert self._makeOne("password").load_raw(vaulted_fp.read()) == expected
+        assert Vault("password").load_raw(vaulted_fp.read()) == expected
 
 
-class TestVaultDumpRaw(_TestBase):
-    def test_dump_file(self, tmpdir, decrypt_text):
+class TestVaultDumpRaw(object):
+    def test_dump_file(self, tmpdir, Vault, decrypt_text):
         plaintext = "test"
         secret = "password"
 
         fp = tmpdir.join("vault.txt")
-        self._makeOne(secret).dump_raw(plaintext, fp)
+        Vault(secret).dump_raw(plaintext, fp)
 
         assert decrypt_text(fp.read(), secret) == plaintext
 
-    def test_dump_text(self, decrypt_text):
+    def test_dump_text(self, Vault, decrypt_text):
         plaintext = "test"
         secret = "password"
 
-        dumped = self._makeOne(secret).dump_raw(plaintext)
+        dumped = Vault(secret).dump_raw(plaintext)
 
         assert decrypt_text(dumped, secret) == plaintext
 
 
-class TestVaultLoad(_TestBase):
-    def test_it(self, vaulted_fp):
+class TestVaultLoad(object):
+    def test_it(self, Vault, vaulted_fp):
         expected = "test"
-        assert self._makeOne("password").load(vaulted_fp.read()) == expected
+        assert Vault("password").load(vaulted_fp.read()) == expected
 
 
-class TestVaultDump(_TestBase):
-    def test_dump_file(self, tmpdir, decrypt_text):
+class TestVaultDump(object):
+    def test_dump_file(self, tmpdir, Vault, decrypt_text):
         plaintext = "test"
         secret = "password"
         if _PY2:
             plaintext = plaintext.encode("utf-8")
 
         fp = tmpdir.join("vault.txt")
-        self._makeOne(secret).dump(plaintext, fp)
+        Vault(secret).dump(plaintext, fp)
 
         expected = "test\n...\n"
         assert decrypt_text(fp.read(), secret) == expected
 
-    def test_dump_text(self, decrypt_text):
+    def test_dump_text(self, Vault, decrypt_text):
         plaintext = "test"
         secret = "password"
         if _PY2:
             plaintext = plaintext.encode("utf-8")
 
-        dumped = self._makeOne(secret).dump(plaintext)
+        dumped = Vault(secret).dump(plaintext)
 
         expected = "test\n...\n"
         assert decrypt_text(dumped, secret) == expected
 
 
-class TestCannotLoadWithInvalidPassword(_TestBase):
+class TestCannotLoadWithInvalidPassword(object):
     @pytest.mark.parametrize("method_name", ["load_raw", "load"])
-    def test_it(self, ansible_ver, vaulted_fp, method_name):
+    def test_it(self, Vault, ansible_ver, vaulted_fp, method_name):
         if ansible_ver < parse_version("2.4"):
-            from ansible.errors import AnsibleError as cls
-
+            cls = import_module("ansible.errors").AnsibleError
             msg = "Decryption failed"
         else:
-            from ansible.parsing.vault import AnsibleVaultError as cls
-
+            cls = import_module("ansible.parsing.vault").AnsibleVaultError
             msg = "Decryption failed (no vault secrets were found that could decrypt)"
 
-        inst = self._makeOne("invalid-password")
+        inst = Vault("invalid-password")
         with pytest.raises(cls) as exc:
             getattr(inst, method_name)(vaulted_fp.read())
         assert str(exc.value) == msg
 
 
-class TestLoadIsNotpwned(_TestBase):
-    def test_it(self, pwned_fp):
+class TestLoadIsNotpwned(object):
+    def test_it(self, Vault, pwned_fp):
         with pytest.raises(ConstructorError):
-            self._makeOne("password").load(pwned_fp.read())
+            Vault("password").load(pwned_fp.read())

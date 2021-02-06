@@ -10,7 +10,9 @@ runs:
       shell: bash
     - name: Install dependencies
       run: |
+        _pyver=$(./venv/py3/bin/python3 -c 'import sys;print("".join(sys.version.split(".")[0:2]))')
         ./venv/bin/python3 -m pip install -U setuptools pip
+        [[ "$_pyver" == "35" ]] && ./venv/bin/python3 -m pip install -U 'cryptography==3.2.1'
         ./venv/bin/python3 -m pip install -e .[dev]
       shell: bash
     - name: Test with pytest
