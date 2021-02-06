@@ -20,17 +20,12 @@ import os
 import subprocess
 import sys
 
-_PY2 = sys.version_info[0] <= 2
-_PY35 = sys.version_info[0:2] == tuple([3.5])
-_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import pytest
 
 
+@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
 def test_black(monkeypatch):
-    if _PY2 or _PY35:
-        # black only support py3.6 and more.
-        return
-
-    monkeypatch.chdir(_ROOT)
+    monkeypatch.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     stderr = subprocess.run(
         [sys.executable, "-m", "black", ".", "--check"], stderr=subprocess.PIPE
     ).stderr

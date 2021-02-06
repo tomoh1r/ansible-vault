@@ -18,9 +18,9 @@ from __future__ import absolute_import
 
 import ansible
 import yaml
+from pkg_resources import parse_version
 
 from ._compat import VaultLib, decode_text
-from pkg_resources import parse_version
 
 
 class Vault(object):
@@ -31,7 +31,7 @@ class Vault(object):
         self.vault = VaultLib(self._make_secrets(self.secret))
 
     def _make_secrets(self, secret):
-        if parse_version(ansible.__version__) < parse_version('2.4'):
+        if parse_version(ansible.__version__) < parse_version("2.4"):
             return secret
 
         from ansible.constants import DEFAULT_VAULT_ID_MATCH

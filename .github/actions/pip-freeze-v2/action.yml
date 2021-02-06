@@ -1,0 +1,8 @@
+name: 'Generate pip freeze file.'
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        ./venv/bin/python -m pip freeze > requirements.txt
+      shell: bash

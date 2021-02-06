@@ -1,0 +1,41 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  super-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: github/super-linter@v3
+        env:
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: .
+          PYTHON_BLACK_CONFIG_FILE: pyproject.toml
+          PYTHON_ISORT_CONFIG_FILE: pyproject.toml
+          VALIDATE_PYTHON_PYLINT: false
+
+  unittest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ansible-vault-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ansible-vault-${{ runner.os }}-
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: tomoh1r/ansible-vault/.github/actions/test-it@issue-26
+        if: "matrix.python-version != '2.7'"
+      - uses: tomoh1r/ansible-vault/.github/actions/test-it-v2@issue-26
+        if: "matrix.python-version == '2.7'"
+      - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze@issue-26
+        if: "matrix.python-version != '2.7'"
+      - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze-v2@issue-26
+        if: "matrix.python-version == '2.7'"

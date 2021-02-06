@@ -1,0 +1,19 @@
+name: 'Test it!'
+description: 'Test this repo.'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create venv.
+      run: |
+        python3 -m venv --clear venv
+      shell: bash
+    - name: Install dependencies
+      run: |
+        ./venv/bin/python3 -m pip install -U setuptools pip
+        ./venv/bin/python3 -m pip install -e .[dev]
+      shell: bash
+    - name: Test with pytest
+      run: |
+        ./venv/bin/python3 -m py.test
+      shell: bash
