@@ -23,6 +23,21 @@ import pytest
 from pkg_resources import parse_version
 
 
+def pytest_addoption(parser):
+    parser.addoption("--lint-code", action="store_true", help="To run linter.")
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "linter: mark test lint code.")
+
+
+def pytest_runtest_setup(item):
+    envnames = [mark for mark in item.iter_markers(name="linter")]
+    if envnames:
+        if not item.config.getoption("--lint-code"):
+            pytest.skip("skip lint code.")
+
+
 @pytest.fixture()
 def setup_testing_syspath(request):
     bk_syspath = sys.path

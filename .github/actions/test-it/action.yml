@@ -17,5 +17,5 @@ runs:
       shell: bash
     - name: Test with pytest
       run: |
-        ./venv/bin/python3 -m py.test
+        ./venv/bin/python3 -m py.test -m "not linter"
       shell: bash
