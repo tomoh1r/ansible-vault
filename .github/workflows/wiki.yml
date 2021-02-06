@@ -1,0 +1,14 @@
+name: wiki
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: SwiftDocOrg/github-wiki-publish-action@e680694d8809da44c40e4d0e7d667edd5ca12899
+        with:
+          path: "doc"
+        env:
+          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}

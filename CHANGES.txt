@@ -1,3 +1,8 @@
+2.1.0 (2021/02/07)
+
+* Create VaultLibABC aim to create user vault interface.
+* Provide make_secrets function.
+
 2.0.0 (2021/02/06)
 
 * Fix version comparison logic #34

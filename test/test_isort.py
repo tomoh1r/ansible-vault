@@ -23,6 +23,7 @@ import sys
 import pytest
 
 
+@pytest.mark.linter
 @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
 def test_isort(monkeypatch):
     monkeypatch.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

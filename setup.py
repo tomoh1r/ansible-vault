@@ -10,12 +10,13 @@ def _read(fname):
 
 setup(
     name="ansible-vault",
-    version="2.0.0",
+    version="2.1.0",
     author="Tomohiro NAKAMURA",
     author_email="quickness.net@gmail.com",
     url="https://github.com/tomoh1r/ansible-vault",
     description="R/W an ansible-vault yaml file",
-    long_description=_read("README.rst"),
+    long_description=_read("README.md"),
+    long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=["setuptools", "ansible"],
     classifiers=[
