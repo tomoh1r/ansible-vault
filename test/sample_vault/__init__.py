@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017, Tomohiro NAKAMURA <quickness.net@gmail.com>
+# Copyright (C) 2021, Tomohiro NAKAMURA <quickness.net@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,3 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-from __future__ import absolute_import
-
-from .api import Vault  # noqa
-from .parsing import VaultLibABC, make_secrets  # noqa

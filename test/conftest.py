@@ -40,11 +40,33 @@ def testing(setup_testing_syspath):
     return import_module("testing")
 
 
+@pytest.fixture()
+def Vault():
+    return import_module("ansible_vault").Vault
+
+
+@pytest.fixture()
+def VaultLib():
+    try:
+        return import_module("ansible.parsing.vault").VaultLib
+    except ImportError:
+        # Ansible<2.0
+        return import_module("ansible.utils.vault").VaultLib
+
+
 @pytest.fixture(scope="session")
 def ansible_ver():
-    import ansible
+    return parse_version(import_module("ansible").__version__)
 
-    return parse_version(ansible.__version__)
+
+@pytest.fixture()
+def encrypt_text(testing):
+    return testing.encrypt_text
+
+
+@pytest.fixture()
+def decrypt_text(testing):
+    return testing.decrypt_text
 
 
 @pytest.fixture(scope="function")

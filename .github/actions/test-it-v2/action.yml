@@ -17,8 +17,7 @@ runs:
       run: |
         ./venv/bin/python2.7 -m pip install -U setuptools pip
         ./venv/bin/python2.7 -m pip install -U 'ansible<2.0.0'
-        ./venv/bin/python2.7 setup.py develop
-        ./venv/bin/python2.7 -m pip install pytest
+        ./venv/bin/python2.7 -m pip install -e .[dev]
       shell: bash
     - name: Test with pytest
       run: |
