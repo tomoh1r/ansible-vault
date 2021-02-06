@@ -1,8 +1,8 @@
 # Samples
 
-## Around VaultLib.
+## Around VaultLib
 
-### Use ANSIBLE\_VAULT\_PASSWORD\_FILE.
+### Use ANSIBLE\_VAULT\_PASSWORD\_FILE
 
 See [test\_password.py](https://github.com/tomoh1r/ansible-vault/blob/master/test/sample_vault/test_password.py).
 
@@ -27,7 +27,7 @@ fpath = Path("path") / "to" / "vaulttext.txt"
 Vault(vault_lib=MyVaultLib()).load(open(fpath).read())
 ```
 
-## Around file types.
+## Around file types
 
 ### PlainText
 

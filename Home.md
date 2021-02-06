@@ -1,4 +1,4 @@
-# ansible-vault: This project aim to R/W an ansible-vault yaml file.
+# ansible-vault
 
 **If you'd like to modify wiki, please update repo/doc directory.**
 
@@ -11,7 +11,7 @@ This project aim to R/W an ansible-vault yaml file.
 You can install with pip.
 
 ```console
-$ pip install ansible-vault
+pip install ansible-vault
 ```
 
 When you have an ansible-vault file, then you can read file. See below.
