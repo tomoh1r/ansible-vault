@@ -13,6 +13,8 @@ assignees: ''
 
 Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
+And read [CONTRIBUTING.md](https://github.com/tomoh1r/ansible-vault/blob/master/CONTRIBUTING.md).
+
 Fixes # (issue)
 
 ## Type of change
