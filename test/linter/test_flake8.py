@@ -16,18 +16,19 @@
 #
 from __future__ import absolute_import, unicode_literals
 
-import os
-import subprocess
-import sys
+from importlib import import_module
 
 import pytest
 
 
 @pytest.mark.linter
-@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
-def test_flake8(monkeypatch):
-    monkeypatch.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    stdout = subprocess.run(
-        [sys.executable, "-m", "flake8", "."], stdout=subprocess.PIPE
-    ).stdout.strip()
-    assert b"" == stdout, stdout.decode("utf-8")
+def test_flake8(monkeypatch, root_path, capture):
+    monkeypatch.chdir(root_path)
+
+    with capture() as out:
+        try:
+            import_module("flake8.main.cli").main(["."])
+        except SystemExit:
+            pass
+
+    assert "" == out[0], out[0]

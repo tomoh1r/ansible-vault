@@ -16,18 +16,19 @@
 #
 from __future__ import absolute_import, unicode_literals
 
-import os
-import subprocess
-import sys
+from importlib import import_module
 
 import pytest
 
 
 @pytest.mark.linter
-@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
-def test_isort(monkeypatch):
-    monkeypatch.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    stdout = subprocess.run(
-        [sys.executable, "-m", "isort", "-vb", "-c", "-rc", "."], stdout=subprocess.PIPE
-    ).stdout
-    assert "ERROR" not in str(stdout), "Please run `./venv/bin/python3 -m isort -rc .`."
+def test_isort(monkeypatch, root_path, capture):
+    monkeypatch.chdir(root_path)
+
+    with capture() as out:
+        try:
+            import_module("isort.main").main(argv=["--check-only", "."])
+        except SystemExit:
+            pass
+
+    assert "ERROR" not in out[1], "Please run `./venv/bin/python3 -m isort .`."

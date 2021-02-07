@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 import os
+import platform
 import sys
 from importlib import import_module
 from textwrap import dedent
@@ -34,8 +35,17 @@ def pytest_configure(config):
 def pytest_runtest_setup(item):
     envnames = [mark for mark in item.iter_markers(name="linter")]
     if envnames:
+        if parse_version(platform.python_version()) < parse_version("3.6"):
+            pytest.skip("lint code requires python3.6 or higher.")
+
         if not item.config.getoption("--lint-code"):
             pytest.skip("skip lint code.")
+
+
+@pytest.fixture()
+def root_path():
+    _here = os.path.dirname(os.path.abspath(__file__))
+    return os.path.dirname(_here)
 
 
 @pytest.fixture()
