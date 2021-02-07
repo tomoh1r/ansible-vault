@@ -1,9 +1,10 @@
 name: linter
 
 on:
-  push
+  push:
+    branches: [ "*" ]
   pull_request:
-    branches: [ master ]
+    branches: [ "master" ]
   schedule:
     - cron: '15 6 * * *'
 
