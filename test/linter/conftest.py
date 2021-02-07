@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2019, Tomohiro NAKAMURA <quickness.net@gmail.com>
+# Copyright (C) 2021, Tomohiro NAKAMURA <quickness.net@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,20 +14,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-from __future__ import absolute_import, unicode_literals
-
-import os
-import subprocess
+import contextlib
 import sys
+from io import StringIO
 
 import pytest
 
 
-@pytest.mark.linter
-@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
-def test_black(monkeypatch):
-    monkeypatch.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    stderr = subprocess.run(
-        [sys.executable, "-m", "black", ".", "--check"], stderr=subprocess.PIPE
-    ).stderr
-    assert "reformatted" not in str(stderr), "Please run `./venv/bin/python3 -m black .`."
+@pytest.fixture()
+def capture():
+    @contextlib.contextmanager
+    def fn():
+        bk = sys.stdout, sys.stderr
+        try:
+            out = [StringIO(), StringIO()]
+            sys.stdout, sys.stderr = out
+            yield out
+        finally:
+            sys.stdout, sys.stderr = bk
+            out[0] = out[0].getvalue()
+            out[1] = out[1].getvalue()
+
+    return fn
