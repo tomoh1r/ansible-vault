@@ -1,21 +1,13 @@
 name: test
 
-on: [push, pull_request]
+on:
+  push
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '30 6 * * *'
 
 jobs:
-  super-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: github/super-linter@v3
-        env:
-          DEFAULT_BRANCH: "master"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: .
-          PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
-          PYTHON_ISORT_CONFIG_FILE: "pyproject.toml"
-          VALIDATE_PYTHON_PYLINT: false
-
   unittest:
     runs-on: ubuntu-latest
     strategy:
@@ -39,5 +31,3 @@ jobs:
         if: "matrix.python-version != '2.7'"
       - uses: tomoh1r/ansible-vault/.github/actions/pip-freeze-v2@master
         if: "matrix.python-version == '2.7'"
-      - uses: tomoh1r/ansible-vault/.github/actions/lint-it@master
-        if: "matrix.python-version == '3.9'"
