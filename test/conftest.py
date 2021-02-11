@@ -49,6 +49,11 @@ def root_path():
 
 
 @pytest.fixture()
+def chdir_root_path(monkeypatch, root_path):
+    monkeypatch.chdir(root_path)
+
+
+@pytest.fixture()
 def setup_testing_syspath(request):
     bk_syspath = sys.path
     _here = os.path.dirname(os.path.abspath(__file__))

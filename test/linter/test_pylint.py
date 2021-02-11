@@ -16,17 +16,15 @@
 #
 from __future__ import absolute_import, unicode_literals
 
+import os
 from importlib import import_module
 
 import pytest
 
 
 @pytest.mark.linter
-def test_isort(chdir_root_path, capture):
-    with capture() as out:
-        try:
-            import_module("isort.main").main(argv=["--check-only", "."])
-        except SystemExit:
-            pass
-
-    assert "ERROR" not in out[1], "Please run `./venv/bin/python3 -m isort .`."
+def test_pylint(chdir_root_path):
+    cmd = ". --rcfile={} --score=no".format(os.path.abspath(".pylintrc"))
+    stdout, stderr = import_module("pylint.epylint").py_run(cmd, return_std=True)
+    stdout, stderr = stdout.getvalue(), stderr.getvalue()
+    assert "" == stdout, stdout

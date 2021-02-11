@@ -22,9 +22,7 @@ import pytest
 
 
 @pytest.mark.linter
-def test_flake8(monkeypatch, root_path, capture):
-    monkeypatch.chdir(root_path)
-
+def test_flake8(chdir_root_path, capture):
     with capture() as out:
         try:
             import_module("flake8.main.cli").main(["."])

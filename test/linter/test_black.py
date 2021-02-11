@@ -22,8 +22,7 @@ import pytest
 
 
 @pytest.mark.linter
-def test_black(monkeypatch, root_path, capture):
-    monkeypatch.chdir(root_path)
+def test_black(chdir_root_path, capture):
     with capture() as out:
         try:
             import_module("black").main([".", "--check"])

@@ -16,6 +16,7 @@ jobs:
           DEFAULT_BRANCH: "master"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: .
-          PYTHON_BLACK_CONFIG_FILE: "pyproject.toml"
-          PYTHON_ISORT_CONFIG_FILE: "pyproject.toml"
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_ISORT: false
           VALIDATE_PYTHON_PYLINT: false
