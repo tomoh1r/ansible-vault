@@ -3,6 +3,7 @@
 **This is not Ansible official project.**
 
 This project aim to R/W an ansible-vault yaml file. [![Test result badge.](https://github.com/tomoh1r/ansible-vault/workflows/test/badge.svg)](https://github.com/tomoh1r/ansible-vault/actions?query=workflow%3Atest) [![Use black.](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ftomoh1r%2Fansible-vault.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ftomoh1r%2Fansible-vault?ref=badge_shield)
 
 ---
 
@@ -44,3 +45,7 @@ See [CONTRIBUTING.md](https://github.com/tomoh1r/ansible-vault/blob/master/CONTR
 ## Links
 
 * [Repository wiki](https://github.com/tomoh1r/ansible-vault/wiki)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ftomoh1r%2Fansible-vault.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ftomoh1r%2Fansible-vault?ref=badge_large)
