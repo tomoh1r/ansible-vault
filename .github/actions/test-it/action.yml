@@ -37,11 +37,13 @@ runs:
       shell: bash
 
     - name: Test with pytest
-      run: |
-        "$HOME/.venv${{inputs.python-version}}/bin/python" -m py.test -m "not linter"
+      run: |-
+        "$HOME/.venv${{inputs.python-version}}/bin/python" -m py.test -m "not linter" \
+            --cov=./ \
+            --cov-report="xml:_reports/coverage-${{inputs.python_version}}.xml"
       shell: bash
 
     - name: Output req.txt for cache
-      run: |
+      run: |-
         "$HOME/.venv${{inputs.python-version}}/bin/python" -m pip freeze > requirements.txt
       shell: bash
