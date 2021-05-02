@@ -1,21 +1,47 @@
 name: 'Test it!'
 description: 'Test this repo.'
 
+inputs:
+  python-version:
+    required: true
+
 runs:
   using: "composite"
   steps:
-    - name: Create venv.
-      run: |
-        python3 -m venv --clear venv
+    - name: Setup test env.
+      run: |-
+        my_venv_bin="$HOME/.venv${{inputs.python-version}}/bin/python"
+
+        sudo apt-get update -y
+        sudo apt-get install -y python-pip-whl python3-venv
+
+        if [[ "${{inputs.python-version}}" == "2.7" ]] ; then
+          python2.7 -m pip install --user -U setuptools pip
+          python2.7 -m pip install --user -U virtualenv
+          pushd $HOME
+            $HOME/.local/bin/virtualenv -p python2.7 --clear --no-wheel .venv2.7
+          popd
+        else
+          pushd $HOME
+            python${{inputs.python-version}} -m venv --clear .venv${{inputs.python-version}}
+          popd
+        fi
+
+        "$my_venv_bin" -m pip install -U setuptools pip
+        if [[ "${{inputs.python-version}}" == "2.7" ]] ; then
+          "$my_venv_bin" -m pip install -U 'ansible<2.0.0'
+        elif [[ "${{inputs.python-version}}" == "3.5" ]] ; then
+          "$my_venv_bin" -m pip install -U 'cryptography==3.2.1'
+        fi
+        "$my_venv_bin" -m pip install -e .[dev]
       shell: bash
-    - name: Install dependencies
-      run: |
-        _pyver=$(./venv/bin/python3 -c 'import sys;print("".join(sys.version.split(".")[0:2]))')
-        ./venv/bin/python3 -m pip install -U setuptools pip
-        [[ "$_pyver" == "35" ]] && ./venv/bin/python3 -m pip install -U 'cryptography==3.2.1'
-        ./venv/bin/python3 -m pip install -e .[dev]
-      shell: bash
+
     - name: Test with pytest
       run: |
-        ./venv/bin/python3 -m py.test -m "not linter"
+        "$HOME/.venv${{inputs.python-version}}/bin/python" -m py.test -m "not linter"
+      shell: bash
+
+    - name: Output req.txt for cache
+      run: |
+        "$HOME/.venv${{inputs.python-version}}/bin/python" -m pip freeze > requirements.txt
       shell: bash
