@@ -6,15 +6,17 @@ runs:
   steps:
     - name: Create venv.
       run: |
-        python3 -m venv --clear venv
+        pushd $HOME
+          python3 -m venv --clear .venv-linter
+        popd
       shell: bash
     - name: Install dependencies
       run: |
-        ./venv/bin/python3 -m pip install -U setuptools pip
-        ./venv/bin/python3 -m pip install -e .[dev]
+        "$HOME/.venv-linter/bin/python" -m pip install -U setuptools pip
+        "$HOME/.venv-linter/bin/python" -m pip install -e .[dev]
       shell: bash
     - name: Test with pytest
       run: |
-        ./venv/bin/python3 -m py.test -m "linter" --lint-code
+        "$HOME/.venv-linter/bin/python" -m py.test -m "linter" --lint-code
       shell: bash
 
