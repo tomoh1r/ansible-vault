@@ -1,0 +1,41 @@
+---
+name: License Scanning
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request_target:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: make-clean.py-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: make-clean.py-${{ runner.os }}-
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Create requirements.txt
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y python3-venv
+          python3 -m venv --clear ~/.venv-license-scanning
+          ~/.venv-license-scanning/bin/python3 -m pip install -U setuptools pip
+          ~/.venv-license-scanning/bin/python3 -m pip install -e .
+          ~/.venv-license-scanning/bin/python3 -m pip freeze > requirements.txt
+
+      - name: Run FOSSA scan and upload build data
+        uses: fossa-contrib/fossa-action@v1
+        with:
+          fossa-api-key: ${{ secrets.FOSSA_API_KEY }}
+          skip-test: false
+...
