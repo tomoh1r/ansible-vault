@@ -1,3 +1,4 @@
+---
 name: 'Test it!'
 description: 'Test this repo.'
 
@@ -47,3 +48,4 @@ runs:
       run: |-
         "$HOME/.venv${{inputs.python-version}}/bin/python" -m pip freeze > requirements.txt
       shell: bash
+...
