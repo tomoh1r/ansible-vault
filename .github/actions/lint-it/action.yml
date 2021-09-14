@@ -1,3 +1,4 @@
+---
 name: 'Lint it!'
 description: 'Lint this repo.'
 
@@ -19,4 +20,4 @@ runs:
       run: |
         "$HOME/.venv-linter/bin/python" -m py.test -m "linter" --lint-code
       shell: bash
-
+...
