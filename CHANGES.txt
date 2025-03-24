@@ -1,3 +1,6 @@
+2.1.1 (2025/03/24)
+* Update setup.cfg for compatability with latest setuptools version
+
 2.1.0 (2021/02/07)
 
 * Create VaultLibABC aim to create user vault interface.
