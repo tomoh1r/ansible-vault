@@ -1,12 +1,7 @@
-import os
-
 from setuptools import find_packages, setup
 
-
-def _read(fname):
-    here = os.path.dirname(os.path.abspath(__file__))
-    return open(os.path.join(here, fname), encoding="utf-8").read()
-
+with open("README.md", encoding="utf-8") as fp:
+    long_description = fp.read()
 
 setup(
     name="ansible-vault",
@@ -15,7 +10,7 @@ setup(
     author_email="quickness.net@gmail.com",
     url="https://github.com/tomoh1r/ansible-vault",
     description="R/W an ansible-vault yaml file",
-    long_description=_read("README.md"),
+    long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=["setuptools", "ansible"],
