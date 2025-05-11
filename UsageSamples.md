@@ -1,4 +1,4 @@
-# Samples
+# Usage Samples
 
 ## Around VaultLib
 
