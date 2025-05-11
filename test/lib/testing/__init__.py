@@ -37,9 +37,7 @@ class AnsibleVaultExecutor(object):
         if self.get_version() >= 2.4:
             pass_opt = "vault-id"
 
-        args = "encrypt --{pass_opt}={pass_path} {plain_fpath}".format(
-            pass_opt=pass_opt, pass_path=pass_path, plain_fpath=plain_fpath
-        )
+        args = f"encrypt --{pass_opt}={pass_path} {plain_fpath}"
         subprocess.check_output(shlex.split(" ".join([self.get_executor(), args])))
 
     def decrypt(self, pass_path, vault_fpath):
@@ -47,25 +45,23 @@ class AnsibleVaultExecutor(object):
         if self.get_version() >= 2.4:
             pass_opt = "vault-id"
 
-        args = "decrypt --{pass_opt}={pass_path} {vault_fpath}".format(
-            pass_opt=pass_opt, pass_path=pass_path, vault_fpath=vault_fpath
-        )
+        args = f"decrypt --{pass_opt}={pass_path} {vault_fpath}"
         subprocess.check_output(shlex.split(" ".join([self.get_executor(), args])))
 
 
-def encrypt_text(plaintext, secret, vault_id=None):
+def encrypt_text(plaintext, encrypt_key, vault_id=None):
     _, plain_fpath = tempfile.mkstemp()
-    with open(plain_fpath, "w") as fp:
+    with open(plain_fpath, "w", encoding="utf-8") as fp:
         fp.write(plaintext)
 
     _, pass_path = tempfile.mkstemp()
-    with open(pass_path, "w") as fp:
-        fp.write(secret)
+    with open(pass_path, "w", encoding="utf-8") as fp:
+        fp.write(encrypt_key)
 
     try:
         AnsibleVaultExecutor().encrypt(pass_path, plain_fpath)
 
-        with open(plain_fpath) as fp:
+        with open(plain_fpath, "r", encoding="utf-8") as fp:
             return fp.read()
 
     finally:
@@ -73,9 +69,9 @@ def encrypt_text(plaintext, secret, vault_id=None):
         os.remove(plain_fpath)
 
 
-def decrypt_text(vaulttext, secret):
+def decrypt_text(vaulttext, decrypt_key):
     _, vault_fpath = tempfile.mkstemp()
-    with open(vault_fpath, "w") as fp:
+    with open(vault_fpath, "w", encoding="utf-8") as fp:
         if _PY2 and isinstance(vaulttext, str):
             vaulttext = vaulttext.decode("utf-8")
         elif not _PY2 and isinstance(vaulttext, bytes):
@@ -83,13 +79,13 @@ def decrypt_text(vaulttext, secret):
         fp.write(vaulttext)
 
     _, pass_path = tempfile.mkstemp()
-    with open(pass_path, "w") as fp:
-        fp.write(secret)
+    with open(pass_path, "w", encoding="utf-8") as fp:
+        fp.write(decrypt_key)
 
     try:
         AnsibleVaultExecutor().decrypt(pass_path, vault_fpath)
 
-        with open(vault_fpath) as fp:
+        with open(vault_fpath, "r", encoding="utf-8") as fp:
             return fp.read()
 
     finally:

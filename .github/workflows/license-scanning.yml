@@ -1,6 +1,10 @@
 ---
 name: License Scanning
 
+permissions:
+  contents: read      # To checkout the repository
+  pull-requests: read # To read PR metadata for pull_request_target triggers
+
 on:
   push:
     branches: [ "master" ]
@@ -9,20 +13,28 @@ on:
 
 jobs:
   build:
+    name: License Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
 
-      - uses: actions/cache@v2
+      - name: Setup Python
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: make-clean.py-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: make-clean.py-${{ runner.os }}-
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+            ${{ runner.os }}-python-
 
       - name: Create requirements.txt
         run: |
@@ -34,8 +46,7 @@ jobs:
           ~/.venv-license-scanning/bin/python3 -m pip freeze > requirements.txt
 
       - name: Run FOSSA scan and upload build data
-        uses: fossa-contrib/fossa-action@v1
+        uses: fossas/fossa-action@v1
         with:
-          fossa-api-key: ${{ secrets.FOSSA_API_KEY }}
-          skip-test: false
+          api-key: ${{ secrets.FOSSA_API_KEY }}
 ...

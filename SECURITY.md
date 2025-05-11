@@ -4,7 +4,7 @@
 
 We are currently supporting 1.2.x or latest(2.x.x).
 
-| Version | Supported          | Desctipsion
+| Version | Supported          | Desctipsion         |
 | ------- | ------------------ |---------------------|
 | 2.x.x   | :white_check_mark: | Active support      |
 | 2.0.x   | :x:                | No support          |

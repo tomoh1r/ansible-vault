@@ -1,4 +1,3 @@
-# coding: utf-8
 #
 # Copyright (C) 2021, Tomohiro NAKAMURA <quickness.net@gmail.com>
 #
@@ -15,17 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+# pylint: disable=R0917
 from __future__ import absolute_import, unicode_literals
-
-import sys
 
 import pytest
 
-_PY2 = sys.version_info[0] <= 2
-
 
 @pytest.mark.parametrize(
-    "input_str,expected", [("test", "test"), ("あいうえお", "あいうえお"), ("test\nあいうえお", "test\nあいうえお")]
+    "input_str,expected",
+    [("test", "test"), ("あいうえお", "あいうえお"), ("test\nあいうえお", "test\nあいうえお")],
 )
 class TestVaultWithPlainText(object):
     _secret = "password"
@@ -33,21 +30,21 @@ class TestVaultWithPlainText(object):
     def test_read_from_encrypted_plain_text(
         self, tmp_path, Vault, encrypt_text, input_str, expected
     ):
-        if _PY2:
-            input_str = input_str.encode("utf-8")
         fpath = str((tmp_path / "vault.txt").absolute())
-        with open(fpath, "w") as fp:
+        with open(fpath, "w", encoding="utf-8") as fp:
             fp.write(encrypt_text(input_str, self._secret))
 
-        assert Vault(self._secret).load_raw(open(fpath).read()) == expected.encode("utf-8")
+        with open(fpath, encoding="utf-8") as fp:
+            actual = Vault(self._secret).load_raw(fp.read())
+        assert actual == expected.encode("utf-8")
 
     def test_encrypt_plain_text_and_write_to_file(
         self, tmp_path, Vault, decrypt_text, input_str, expected
     ):
         fpath = str((tmp_path / "vault.txt").absolute())
-        with open(fpath, "w") as fp:
+        with open(fpath, "w", encoding="utf-8") as fp:
             Vault(self._secret).dump_raw(input_str.encode("utf-8"), fp)
 
-        if _PY2:
-            expected = expected.encode("utf-8")
-        assert decrypt_text(open(fpath).read(), self._secret) == expected
+        with open(fpath, encoding="utf-8") as fp:
+            actual = decrypt_text(fp.read(), self._secret)
+        assert actual == expected

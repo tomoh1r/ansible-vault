@@ -14,17 +14,36 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-from __future__ import absolute_import, unicode_literals
-
 import os
-from importlib import import_module
+import sys
+from io import StringIO
 
 import pytest
+from pylint import lint
 
 
 @pytest.mark.linter
 def test_pylint(chdir_root_path):
-    cmd = ". --rcfile={} --score=no".format(os.path.abspath(".pylintrc"))
-    stdout, stderr = import_module("pylint.epylint").py_run(cmd, return_std=True)
-    stdout, stderr = stdout.getvalue(), stderr.getvalue()
-    assert "" == stdout, stdout
+    """
+    Run Pylint against the project root, using .pylintrc, and
+    assert that no errors are reported.
+    """
+    # Path to your pylintrc
+    rcfile = os.path.abspath(".pylintrc")
+
+    # Prepare arguments for lint.Run: [--rcfile, path, --score, no, target]
+    args = ["--rcfile", rcfile, "--score", "no", "."]
+
+    # Capture stdout/stderr
+    old_stdout, old_stderr = sys.stdout, sys.stderr
+    sys.stdout = sys.stderr = StringIO()
+
+    # Run Pylint without exiting the process
+    result = lint.Run(args, exit=False)
+
+    # Retrieve output and restore streams
+    output = sys.stdout.getvalue()
+    sys.stdout, sys.stderr = old_stdout, old_stderr
+
+    # Assert that Pylint found no issues (exit status 0)
+    assert result.linter.msg_status == 0, f"Pylint errors:\n{output}"

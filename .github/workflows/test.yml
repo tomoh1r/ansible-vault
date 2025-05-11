@@ -1,6 +1,12 @@
 ---
 name: test
 
+# Define permissions for the job.
+# This is especially important for pull_request_target triggers.
+permissions:
+  contents: read      # To checkout the repository
+  pull-requests: read # To read PR metadata for pull_request_target triggers
+
 on:
   push:
     branches: [ "*" ]
@@ -11,25 +17,39 @@ on:
 
 jobs:
   unittest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python-version: ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Checkout the PR head commit when triggered by pull_request_target.
+          # Otherwise, checkout the ref that triggered the workflow (e.g., branch for push, default branch for schedule).
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+
+      - name: Setup Python
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ansible-vault-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: ansible-vault-${{ runner.os }}-
-      - uses: actions/setup-python@v2
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+            ${{ runner.os }}-python-
+
+      - name: Run tests
+        uses: ./.github/actions/test-it
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: ./.github/actions/test-it
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - uses: ./.github/actions/lint-it
-        if: ${{ matrix.python-version == '3.9' }}
+      - name: Run linters
+        uses: ./.github/actions/lint-it
+        if: ${{ matrix.python-version == '3.10' }}
 ...

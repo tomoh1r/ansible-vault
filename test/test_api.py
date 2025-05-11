@@ -20,7 +20,6 @@ import sys
 from importlib import import_module
 
 import pytest
-from pkg_resources import parse_version
 from yaml.constructor import ConstructorError
 
 _PY2 = sys.version_info[0] <= 2
@@ -86,13 +85,9 @@ class TestVaultDump(object):
 
 class TestCannotLoadWithInvalidPassword(object):
     @pytest.mark.parametrize("method_name", ["load_raw", "load"])
-    def test_it(self, Vault, ansible_ver, vaulted_fp, method_name):
-        if ansible_ver < parse_version("2.4"):
-            cls = import_module("ansible.errors").AnsibleError
-            msg = "Decryption failed"
-        else:
-            cls = import_module("ansible.parsing.vault").AnsibleVaultError
-            msg = "Decryption failed (no vault secrets were found that could decrypt)"
+    def test_it(self, Vault, vaulted_fp, method_name):
+        cls = import_module("ansible.parsing.vault").AnsibleVaultError
+        msg = "Decryption failed (no vault secrets were found that could decrypt)"
 
         inst = Vault("invalid-password")
         with pytest.raises(cls) as exc:

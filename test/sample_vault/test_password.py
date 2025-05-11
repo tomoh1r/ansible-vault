@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+# pylint: disable=R0917
 from __future__ import absolute_import, unicode_literals
 
 import os
@@ -23,7 +24,7 @@ import pytest
 
 
 class TestVault(object):
-    _password = "password"
+    _vault_key = "password"
 
     @pytest.fixture()
     def MyVaultLib(self, VaultLib):
@@ -32,7 +33,8 @@ class TestVault(object):
         class Cls(import_module("ansible_vault").VaultLibABC):
             def __init__(self):
                 fpath = os.environ.get("ANSIBLE_VAULT_PASSWORD_FILE")
-                password = open(fpath).read().strip().encode("utf-8")
+                with open(fpath, "r", encoding="utf-8") as fp:
+                    password = fp.read().strip().encode("utf-8")
                 self.vlib = VaultLib(make_secrets(password))
 
             def encrypt(self, plaintext):
@@ -46,8 +48,8 @@ class TestVault(object):
     @pytest.fixture()
     def password_file(self, tmp_path):
         fpath = str(tmp_path / "passwd.txt")
-        with open(fpath, "w") as fp:
-            fp.write(self._password + "\n")
+        with open(fpath, "w", encoding="utf-8") as fp:
+            fp.write(self._vault_key + "\n")
         return fpath
 
     def test_load(self, monkeypatch, Vault, MyVaultLib, password_file, vaulted_fp):
@@ -61,4 +63,4 @@ class TestVault(object):
 
         inst = Vault(vault_lib=MyVaultLib())
         dumped = inst.dump_raw("test")
-        assert decrypt_text(dumped, self._password) == "test"
+        assert decrypt_text(dumped, self._vault_key) == "test"

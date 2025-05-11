@@ -15,13 +15,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 import os
-import platform
 import sys
 from importlib import import_module
 from textwrap import dedent
 
 import pytest
-from pkg_resources import parse_version
 
 
 def pytest_addoption(parser):
@@ -35,9 +33,6 @@ def pytest_configure(config):
 def pytest_runtest_setup(item):
     envnames = [mark for mark in item.iter_markers(name="linter")]
     if envnames:
-        if parse_version(platform.python_version()) < parse_version("3.6"):
-            pytest.skip("lint code requires python3.6 or higher.")
-
         if not item.config.getoption("--lint-code"):
             pytest.skip("skip lint code.")
 
@@ -82,11 +77,6 @@ def VaultLib():
     except ImportError:
         # Ansible<2.0
         return import_module("ansible.utils.vault").VaultLib
-
-
-@pytest.fixture(scope="session")
-def ansible_ver():
-    return parse_version(import_module("ansible").__version__)
 
 
 @pytest.fixture()

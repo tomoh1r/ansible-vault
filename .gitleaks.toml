@@ -1,0 +1,7 @@
+[[rules]]
+id = "skip-test-password-file"
+description = "Ignore test_password.py for false positives"
+severity = "INFO"
+paths = ["^github/workspace/test/sample_vault/test_password.py$"]
+[[rules.allowlists]]
+regexes = ["*"]

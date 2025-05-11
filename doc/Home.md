@@ -8,6 +8,6 @@ This project aim to R/W an ansible-vault yaml file.
 
 ## Getting Started & Documentation
 
-*   For a quick start guide, please see the project README.
-*   For development setup and instructions, refer to the Installation guide.
-*   To see how to use the library, check out the Usage Samples.
+* For a quick start guide, please see the project README.
+* For development setup and instructions, refer to the Installation guide.
+* To see how to use the library, check out the Usage Samples.

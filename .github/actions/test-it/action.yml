@@ -14,32 +14,18 @@ runs:
         my_venv_bin="$HOME/.venv${{inputs.python-version}}/bin/python"
 
         sudo apt-get update -y
-        sudo apt-get install -y python-pip-whl python3-venv
-
-        if [[ "${{inputs.python-version}}" == "2.7" ]] ; then
-          python2.7 -m pip install --user -U setuptools pip
-          python2.7 -m pip install --user -U virtualenv
-          pushd $HOME
-            $HOME/.local/bin/virtualenv -p python2.7 --clear --no-wheel .venv2.7
-          popd
-        else
-          pushd $HOME
-            python${{inputs.python-version}} -m venv --clear .venv${{inputs.python-version}}
-          popd
-        fi
+        sudo apt-get install -y python3-pip-whl python3-venv
+        pushd $HOME
+          python${{inputs.python-version}} -m venv --clear .venv${{inputs.python-version}}
+        popd
 
         "$my_venv_bin" -m pip install -U setuptools pip
-        if [[ "${{inputs.python-version}}" == "2.7" ]] ; then
-          "$my_venv_bin" -m pip install -U 'ansible<2.0.0'
-        elif [[ "${{inputs.python-version}}" == "3.5" ]] ; then
-          "$my_venv_bin" -m pip install -U 'cryptography==3.2.1'
-        fi
         "$my_venv_bin" -m pip install -e .[dev]
       shell: bash
 
     - name: Test with pytest
       run: |-
-        "$HOME/.venv${{inputs.python-version}}/bin/python" -m py.test -m "not linter" \
+        "$HOME/.venv${{inputs.python-version}}/bin/python" -m pytest -m "not linter" \
             --cov=./ \
             --cov-report="xml:_reports/coverage-${{inputs.python_version}}.xml"
       shell: bash
