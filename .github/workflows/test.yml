@@ -55,7 +55,8 @@ jobs:
 
       - name: Upload coverage
         # FIXME: combine all versions into a single xmls and upload this
-        run: $HOME/.venv"${{ matrix.python-version }}"/bin/python -m coveralls
+        run: |-
+          "$HOME/.venv${{ matrix.python-version }}/bin/python" -m coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
           COVERALLS_COVERAGE_FILE: _reports/coverage-${{ matrix.python-version }}.xml

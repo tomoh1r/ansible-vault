@@ -14,21 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-import sys
-
-try:
-    from ansible.parsing.vault import VaultLib  # noqa
-except ImportError:
-    # Ansible<2.0
-    from ansible.utils.vault import VaultLib  # noqa
-
-
-_PY2 = sys.version_info[0] <= 2
+from ansible.parsing.vault import VaultLib  # noqa
 
 
 def decode_text(text):
-    if _PY2 and isinstance(text, str):
-        return text.decode("utf-8")
-    elif not _PY2 and isinstance(text, bytes):
+    if isinstance(text, bytes):
         return text.decode("utf-8")
     return text

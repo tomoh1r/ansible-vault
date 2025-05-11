@@ -20,8 +20,6 @@ import subprocess
 import sys
 import tempfile
 
-_PY2 = sys.version_info[0] <= 2
-
 
 class AnsibleVaultExecutor(object):
     def get_version(self):
@@ -72,9 +70,7 @@ def encrypt_text(plaintext, encrypt_key, vault_id=None):
 def decrypt_text(vaulttext, decrypt_key):
     _, vault_fpath = tempfile.mkstemp()
     with open(vault_fpath, "w", encoding="utf-8") as fp:
-        if _PY2 and isinstance(vaulttext, str):
-            vaulttext = vaulttext.decode("utf-8")
-        elif not _PY2 and isinstance(vaulttext, bytes):
+        if isinstance(vaulttext, bytes):
             vaulttext = vaulttext.decode("utf-8")
         fp.write(vaulttext)
 
