@@ -16,20 +16,15 @@
 #
 from __future__ import absolute_import, unicode_literals
 
-import sys
 from importlib import import_module
 
 import pytest
 from yaml.constructor import ConstructorError
 
-_PY2 = sys.version_info[0] <= 2
-
 
 class TestVaultLoadRaw(object):
     def test_it(self, Vault, vaulted_fp):
-        expected = "test\n...\n"
-        if not _PY2:
-            expected = expected.encode("utf-8")
+        expected = "test\n...\n".encode("utf-8")
         assert Vault("password").load_raw(vaulted_fp.read()) == expected
 
 
@@ -62,8 +57,6 @@ class TestVaultDump(object):
     def test_dump_file(self, tmpdir, Vault, decrypt_text):
         plaintext = "test"
         secret = "password"
-        if _PY2:
-            plaintext = plaintext.encode("utf-8")
 
         fp = tmpdir.join("vault.txt")
         Vault(secret).dump(plaintext, fp)
@@ -74,8 +67,6 @@ class TestVaultDump(object):
     def test_dump_text(self, Vault, decrypt_text):
         plaintext = "test"
         secret = "password"
-        if _PY2:
-            plaintext = plaintext.encode("utf-8")
 
         dumped = Vault(secret).dump(plaintext)
 
