@@ -31,8 +31,15 @@ setup(
     ],
     license="GPLv3",
     extras_require={
-        "dev": ["pytest", "pytest-cov"],
-        'dev:python_version>="3.6"': ["flake8", "black", "isort[pyproject]", "pylint"],
-        "release": ["twine"],
+        "dev": [
+            "pytest",
+            "pytest-cov",
+            "coveralls",
+            "flake8",
+            "black",
+            "isort[pyproject]",
+            "pylint",
+        ],
+        "release": ["build", "twine"],
     },
 )

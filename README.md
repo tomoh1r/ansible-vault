@@ -2,7 +2,11 @@
 
 **This is not an official Ansible project.**
 
-This project aim to R/W an ansible-vault yaml file. [![Test result badge.](https://github.com/tomoh1r/ansible-vault/workflows/test/badge.svg)](https://github.com/tomoh1r/ansible-vault/actions?query=workflow%3Atest) [![Use black.](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+This project aim to R/W an ansible-vault yaml file.
+
+[![Test result badge.](https://github.com/tomoh1r/ansible-vault/workflows/test/badge.svg)](https://github.com/tomoh1r/ansible-vault/actions?query=workflow%3Atest)
+[![Use black.](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+[![Coverage Status](https://coveralls.io/repos/github/tomoh1r/ansible-vault/badge.svg)](https://coveralls.io/github/tomoh1r/ansible-vault)
 
 ---
 

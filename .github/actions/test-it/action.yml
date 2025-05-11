@@ -27,7 +27,8 @@ runs:
       run: |-
         "$HOME/.venv${{inputs.python-version}}/bin/python" -m pytest -m "not linter" \
             --cov=./ \
-            --cov-report="xml:_reports/coverage-${{inputs.python_version}}.xml"
+            --cov-report="xml:_reports/coverage-${{inputs.python_version}}.xml" \
+            --cov-report=term-missing
       shell: bash
 
     - name: Output req.txt for cache
