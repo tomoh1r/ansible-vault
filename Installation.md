@@ -27,10 +27,10 @@ $ .venv/bin/python -m pytest
 
 ## Managing repo
 
-Update GitHub wiki
+Update GitHub wiki files (docs/*) and push
 
 ```console
-# FIXME: use subtree
+$ git subtree push --prefix=doc wiki HEAD:master
 ```
 
 Install release dep packages, build, and release
