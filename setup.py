@@ -5,7 +5,7 @@ with open("README.md", encoding="utf-8") as fp:
 
 setup(
     name="ansible-vault",
-    version="3.0.0",
+    version="3.1.0",
     author="Tomohiro NAKAMURA",
     author_email="quickness.net@gmail.com",
     url="https://github.com/tomoh1r/ansible-vault",

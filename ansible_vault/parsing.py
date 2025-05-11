@@ -16,9 +16,6 @@
 #
 from abc import ABCMeta, abstractmethod
 
-import ansible
-from pkg_resources import parse_version
-
 from ._compat import VaultLib
 
 
@@ -49,10 +46,7 @@ class AnsibleVaultLib(VaultLibABC):
 
 def make_secrets(secret):
     """Create ansible compatible secret."""
-    if parse_version(ansible.__version__) < parse_version("2.4"):
-        return secret
-
     from ansible.constants import DEFAULT_VAULT_ID_MATCH
-    from ansible.parsing.vault import VaultSecret
+    from ansible.parsing import vault
 
-    return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
+    return [(DEFAULT_VAULT_ID_MATCH, vault.VaultSecret(secret))]
