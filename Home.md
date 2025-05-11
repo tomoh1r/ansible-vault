@@ -8,38 +8,6 @@ This project aim to R/W an ansible-vault yaml file.
 
 **This is not Ansible official project.**
 
-You can install with pip.
-
-```console
-pip install ansible-vault
-```
-
-When you have an ansible-vault file, then you can read file. See below.
-
-```python
-from ansible_vault import Vault
-
-vault = Vault('password')
-data = vault.load(open('vault.yml').read())
-```
-
-When you have to write data, then you can write data to file. See below.
-
-```python
-from ansible_vault import Vault
-
-vault = Vault('password')
-vault.dump(data, open('vault.yml', 'w'))
-
-# also you can get encrypted text
-print(vault.dump(data))
-```
-
-See [Samples](./sample).
-
----
-
-## Pages
-
-* [Run unittest](./unittest)
-* [Samples](./sample)
+To know quick start, see [README](https://github.com/tomoh1r/ansible-vault).
+To know development, see [Installation](https://github.com/tomoh1r/ansible-vault/wiki/Installation).
+To know how to use, see [Usage Smaples](https://github.com/tomoh1r/ansible-vault/wiki/UsageSamples).
