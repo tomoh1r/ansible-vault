@@ -1,4 +1,10 @@
-3.1.0 (2025/05/xx)
+4.0.0 (2025/05/15)
+
+* **BREAKING CHANGE**: Removed support for Ansible below 2.15
+* **BREAKING CHANGE**: Removed support for Python below 3.9
+* **BREAKING CHANGE**: Removed depending on ansible and instead depend on ansible-core
+
+3.1.0 (2025/05/11)
 
 * **BREAKING CHANGE**: Removed support for Ansible below 2.4
 
