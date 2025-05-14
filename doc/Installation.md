@@ -1,5 +1,7 @@
 # Installation
 
+This manual derive you to develop this library.
+
 ## Setup
 
 Create virtualenv and install packages
