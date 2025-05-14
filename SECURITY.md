@@ -2,15 +2,18 @@
 
 ## Supported Versions
 
-We are currently supporting 1.2.x or latest(2.x.x).
+We support ansible-core maintenanced versions.
+Currently supporting is below:
 
-| Version | Supported          | Desctipsion         |
-| ------- | ------------------ |---------------------|
-| 2.x.x   | :white_check_mark: | Active support      |
-| 2.0.x   | :x:                | No support          |
-| 1.2.x   | :white_check_mark: | Maintenance support |
-| < 1.1   | :x:                | No support          |
+| Version  | Supported          | Desctipsion         |
+| -------- | ------------------ |---------------------|
+| 2.18.x   | :white_check_mark: | Active support      |
+| 2.17.x   | :white_check_mark: | Active support      |
+| 2.16.x   | :white_check_mark: | Active support      |
+| < 2.15.x | :x:                | No support          |
+
+See [Releases and maintenance — Ansible Community Documentation](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html).
 
 ## Reporting a Vulnerability
 
-Feel free to report owner (address is [here](https://github.com/tomoh1r/ansible-vault/blob/master/setup.py#L15)).
+Feel free to report owner (address is [here](https://github.com/tomoh1r)).
