@@ -20,9 +20,8 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-    license="GPLv3",
+    license="GPL-3.0-or-later",
     extras_require={
         "dev": [
             "setuptools",
