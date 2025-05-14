@@ -33,6 +33,7 @@ setup(
             "black",
             "isort[pyproject]",
             "pylint",
+            "pylint-pytest",
         ],
         "release": ["build", "twine"],
     },

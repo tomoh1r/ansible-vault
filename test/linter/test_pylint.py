@@ -32,7 +32,7 @@ def test_pylint(chdir_root_path):
     rcfile = os.path.abspath(".pylintrc")
 
     # Prepare arguments for lint.Run: [--rcfile, path, --score, no, target]
-    args = ["--rcfile", rcfile, "--score", "no", "."]
+    args = ["--rcfile", rcfile, "--score", "no", "ansible_vault", "test/*"]
 
     # Capture stdout/stderr
     old_stdout, old_stderr = sys.stdout, sys.stderr
