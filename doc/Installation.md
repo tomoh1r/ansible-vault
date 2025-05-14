@@ -8,7 +8,7 @@ Create virtualenv and install packages
 
 ```console
 python3 -m venv --clear .venv
-.venv/bin/python -m pip install -U setuptools pip wheel
+.venv/bin/python -m pip install -U pip
 .venv/bin/python -m pip install -e '.[dev]'
 ```
 
