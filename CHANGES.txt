@@ -1,3 +1,7 @@
+4.0.1 (2025/05/15)
+
+* Add support for specifying version constraints for ansible-core (>= 2.16) and PyYAML (>= 5.1)
+
 4.0.0 (2025/05/15)
 
 * **BREAKING CHANGE**: Removed support for Ansible below 2.15
