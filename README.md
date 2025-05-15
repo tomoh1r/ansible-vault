@@ -4,9 +4,12 @@
 
 This project aim to R/W an ansible-vault yaml file.
 
-[![Test result badge.](https://github.com/tomoh1r/ansible-vault/workflows/test/badge.svg)](https://github.com/tomoh1r/ansible-vault/actions?query=workflow%3Atest)
-[![Use black.](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
-[![Coverage Status](https://coveralls.io/repos/github/tomoh1r/ansible-vault/badge.svg)](https://coveralls.io/github/tomoh1r/ansible-vault)
+[![test](https://github.com/tomoh1r/ansible-vault/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/tomoh1r/ansible-vault/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/tomoh1r/ansible-vault/badge.svg?branch=master)](https://coveralls.io/github/tomoh1r/ansible-vault?branch=master)
+[![PyPI - Version](https://img.shields.io/pypi/v/ansible-vault)](https://pypi.org/project/ansible-vault/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ansible-vault)
+![ansible-core Support Version](https://img.shields.io/badge/misc-2.16%20%7C%202.17%20%7C%202.18-blue?label=ansible-vault)
+![GitHub License](https://img.shields.io/github/license/tomoh1r/ansible-vault)
 
 ---
 
