@@ -5,7 +5,7 @@ with open("README.md", encoding="utf-8") as fp:
 
 setup(
     name="ansible-vault",
-    version="4.0.0",
+    version="4.0.1",
     author="Tomohiro NAKAMURA",
     author_email="quickness.net@gmail.com",
     url="https://github.com/tomoh1r/ansible-vault",
@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    install_requires=["ansible-core"],
+    install_requires=["ansible-core>=2.16", "PyYAML>=5.1"],
     classifiers=[
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
