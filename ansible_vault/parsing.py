@@ -16,8 +16,6 @@
 #
 from abc import ABCMeta, abstractmethod
 
-from ._compat import VaultLib
-
 
 class VaultLibABC(object):
     __metaclass__ = ABCMeta
@@ -35,7 +33,9 @@ class AnsibleVaultLib(VaultLibABC):
     """Default encrypt/decrypt lib."""
 
     def __init__(self, secret):
-        self.vault = VaultLib(make_secrets(secret))
+        from ansible.parsing import vault
+
+        self.vault = vault.VaultLib(make_secrets(secret))
 
     def encrypt(self, plaintext):
         return self.vault.encrypt(plaintext)

@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-22.04']
-        python-version: ['3.11', '3.12', '3.13']
+        python-version: ['3.12', '3.13']
         ansible-core-version: ['>=2.18,<2.19']
         lint-code: [false]
         include:
@@ -69,7 +69,6 @@ jobs:
               --cov=./ \
               --cov-report="xml:_reports/coverage-${{matrix.python-version}}.xml" \
               --cov-report=term-missing
-        if: ${{ !matrix.lint-code }}
 
       - name: Output req.txt for cache
         run: python -m pip freeze > requirements.txt

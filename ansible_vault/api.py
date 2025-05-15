@@ -18,7 +18,6 @@ from __future__ import absolute_import
 
 import yaml
 
-from ._compat import decode_text
 from .parsing import AnsibleVaultLib
 
 
@@ -42,7 +41,10 @@ class Vault(object):
 
     def dump_raw(self, text, stream=None):
         """Encrypt raw data and write to stream."""
-        encrypted = decode_text(self.vault.encrypt(text))
+        encrypted = self.vault.encrypt(text)
+        if isinstance(encrypted, bytes):
+            encrypted = encrypted.decode("utf-8")
+
         if stream:
             stream.write(encrypted)
         else:

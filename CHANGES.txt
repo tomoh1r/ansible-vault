@@ -1,3 +1,8 @@
+4.1.0 (2025/05/15)
+
+* feat: Support additional YAML parameters in dump refs #22
+* Remove old codes for compatibility
+
 4.0.1 (2025/05/15)
 
 * Add support for specifying version constraints for ansible-core (>= 2.16) and PyYAML (>= 5.1)
