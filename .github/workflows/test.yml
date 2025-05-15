@@ -1,0 +1,87 @@
+name: test
+
+# Define permissions for the job.
+# This is especially important for pull_request_target triggers.
+permissions:
+  contents: read      # To checkout the repository
+  pull-requests: read # To read PR metadata for pull_request_target triggers
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request_target:
+    branches: [ 'master' ]
+  schedule:
+    - cron: '30 6 * * *'
+
+jobs:
+  unittest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-22.04']
+        python-version: ['3.11', '3.12', '3.13']
+        ansible-core-version: ['>=2.18,<2.19']
+        lint-code: [false]
+        include:
+          # macos
+          - os: 'macos-latest'
+            python-version: '3.11'
+            ansible-core-version: '>=2.18,<2.19'
+            lint-code: false
+          # mainte
+          - os: 'ubuntu-22.04'
+            python-version: '3.10'
+            ansible-core-version: '>=2.17,<2.18'
+            lint-code: false
+          - os: 'ubuntu-22.04'
+            python-version: '3.10'
+            ansible-core-version: '>=2.16,<2.17'
+            lint-code: false
+          # lint code
+          - os: 'ubuntu-22.04'
+            python-version: '3.11'
+            ansible-core-version: '>=2.18,<2.19'
+            lint-code: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Checkout the PR head commit when triggered by pull_request_target.
+          # Otherwise, checkout the ref that triggered the workflow (e.g., branch for push, default branch for schedule).
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+
+      - name: Setup Python
+        id: setup_python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install 'ansible-core${{ matrix.ansible-core-version }}' -e .[dev]
+
+      - name: Test with pytest
+        run: |-
+          python -m pytest -m "not linter" \
+              --cov=./ \
+              --cov-report="xml:_reports/coverage-${{matrix.python-version}}.xml" \
+              --cov-report=term-missing
+        if: ${{ !matrix.lint-code }}
+
+      - name: Output req.txt for cache
+        run: python -m pip freeze > requirements.txt
+
+      - name: Test with pytest
+        run: python -m pytest -m "linter" --lint-code
+        if: ${{ matrix.lint-code }}
+
+      - name: Upload coverage
+        # FIXME: combine all versions into a single xmls and upload this
+        run: python -m coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_COVERAGE_FILE: _reports/coverage-${{ matrix.python-version }}.xml
+        if: ${{ matrix.lint-code }}

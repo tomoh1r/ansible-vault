@@ -1,0 +1,29 @@
+[tool.black]
+line-length = 99
+target-version = ['py35', 'py36', 'py37', 'py38', 'py39', 'py310', 'py311', 'py312', 'py313']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | venv
+  | .venv
+  | _build
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+include_trailing_comma = true
+line_length = 99
+multi_line_output = 3
+skip_glob = '**/*.eggs,.git,**/.mypy_cache,**/.tox,venv,.venv,**/_build,**/build,**/dist'
+
+[tool.pytest.ini_options]
+norecursedirs = "venv"
+testpaths = [
+    "test",
+]

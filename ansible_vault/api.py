@@ -16,34 +16,25 @@
 #
 from __future__ import absolute_import
 
-import ansible
 import yaml
-try:
-    from ansible.parsing.vault import VaultLib
-except ImportError:
-    # Ansible<2.0
-    from ansible.utils.vault import VaultLib
 
-
-_ansible_ver = float('.'.join(ansible.__version__.split('.')[:2]))
+from ._compat import decode_text
+from .parsing import AnsibleVaultLib
 
 
 class Vault(object):
-    '''R/W an ansible-vault yaml file'''
+    """R/W an ansible-vault yaml file"""
 
-    def __init__(self, password):
-        self._ansible_ver = _ansible_ver
+    def __init__(self, password=None, vault_lib=None):
+        if not any([password, vault_lib]):
+            raise ValueError("You should specify value to password or vault_lib.")
 
-        self.secret = password.encode('utf-8')
-        self.vault = VaultLib(self._make_secrets(self.secret))
-
-    def _make_secrets(self, secret):
-        if self._ansible_ver < 2.4:
-            return secret
-
-        from ansible.constants import DEFAULT_VAULT_ID_MATCH
-        from ansible.parsing.vault import VaultSecret
-        return [(DEFAULT_VAULT_ID_MATCH, VaultSecret(secret))]
+        if password:
+            self.secret = password.encode("utf-8")
+            self.vault = AnsibleVaultLib(self.secret)
+        else:
+            self.secret = None
+            self.vault = vault_lib
 
     def load_raw(self, stream):
         """Read vault stream and return raw data."""
@@ -51,7 +42,7 @@ class Vault(object):
 
     def dump_raw(self, text, stream=None):
         """Encrypt raw data and write to stream."""
-        encrypted = self.vault.encrypt(text)
+        encrypted = decode_text(self.vault.encrypt(text))
         if stream:
             stream.write(encrypted)
         else:
@@ -63,10 +54,5 @@ class Vault(object):
 
     def dump(self, data, stream=None, **kwargs):
         """Encrypt data and print stdout or write to stream."""
-        yaml_text = yaml.dump(
-            data,
-            default_flow_style=False,
-            allow_unicode=True,
-            **kwargs
-        )
+        yaml_text = yaml.dump(data, default_flow_style=False, allow_unicode=True, **kwargs)
         return self.dump_raw(yaml_text, stream=stream)

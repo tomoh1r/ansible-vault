@@ -1,3 +1,39 @@
+4.0.1 (2025/05/15)
+
+* Add support for specifying version constraints for ansible-core (>= 2.16) and PyYAML (>= 5.1)
+
+4.0.0 (2025/05/15)
+
+* **BREAKING CHANGE**: Removed support for Ansible below 2.15
+* **BREAKING CHANGE**: Removed support for Python below 3.9
+* **BREAKING CHANGE**: Removed depending on ansible and instead depend on ansible-core
+
+3.1.0 (2025/05/11)
+
+* **BREAKING CHANGE**: Removed support for Ansible below 2.4
+
+3.0.0 (2025/05/11)
+
+* **BREAKING CHANGE**: Removed support for Python 2.7-3.8.
+
+2.1.0 (2021/02/07)
+
+* Create VaultLibABC aim to create user vault interface.
+* Provide make_secrets function.
+
+2.0.0 (2021/02/06)
+
+* Fix version comparison logic #34
+* Add setuptools to install_requires for detect pkg version.
+* Add setup classifiers Python 3.9.
+
+2.0.0b1 (2019/07/15)
+
+* Merge p-r #12/#14 and it derive an incompatibility. This aim to be not require
+  the user to specify binary on file open.
+* Take in black, isort.
+* Add setup classifiers Python 3.8.
+
 1.2.0 (2018/09/16)
 
 * Add load_raw()/dump_raw() method.

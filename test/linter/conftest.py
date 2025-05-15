@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017, Tomohiro NAKAMURA <quickness.net@gmail.com>
+# Copyright (C) 2021, Tomohiro NAKAMURA <quickness.net@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-from __future__ import absolute_import
+import contextlib
+import sys
+from io import StringIO
 
-from .api import Vault  # noqa
-from .parsing import VaultLibABC, make_secrets  # noqa
+import pytest
+
+
+@pytest.fixture()
+def capture():
+    @contextlib.contextmanager
+    def fn():
+        bk = sys.stdout, sys.stderr
+        try:
+            out = [StringIO(), StringIO()]
+            sys.stdout, sys.stderr = out
+            yield out
+        finally:
+            sys.stdout, sys.stderr = bk
+            out[0] = out[0].getvalue()
+            out[1] = out[1].getvalue()
+
+    return fn

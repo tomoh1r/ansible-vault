@@ -1,34 +1,39 @@
-import os
+from setuptools import find_packages, setup
 
-from setuptools import setup, find_packages
-
-
-def _read(fname):
-    here = os.path.dirname(os.path.abspath(__file__))
-    return open(os.path.join(here, fname)).read()
-
+with open("README.md", encoding="utf-8") as fp:
+    long_description = fp.read()
 
 setup(
-    name='ansible-vault',
-    version='1.2.0',
-    author='Tomohiro NAKAMURA',
-    author_email='quickness.net@gmail.com',
-    url='https://github.com/tomoh1r/ansible-vault',
-    description='R/W an ansible-vault yaml file',
-    long_description=_read('README.rst'),
+    name="ansible-vault",
+    version="4.0.1",
+    author="Tomohiro NAKAMURA",
+    author_email="quickness.net@gmail.com",
+    url="https://github.com/tomoh1r/ansible-vault",
+    description="R/W an ansible-vault yaml file",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(),
-    install_requires=['ansible'],
+    install_requires=["ansible-core>=2.16", "PyYAML>=5.1"],
     classifiers=[
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Development Status :: 5 - Production/Stable',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Development Status :: 5 - Production/Stable",
     ],
-    license='GPLv3',
+    license="GPL-3.0-or-later",
     extras_require={
-        'test': ['pytest'],
-        'release': ['twine'],
-    }
+        "dev": [
+            "setuptools",
+            "pytest",
+            "pytest-cov",
+            "coveralls",
+            "flake8",
+            "black",
+            "isort",
+            "pylint",
+            "pylint-pytest",
+        ],
+        "release": ["build", "twine"],
+    },
 )

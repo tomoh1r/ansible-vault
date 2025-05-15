@@ -1,0 +1,37 @@
+name: super-linter
+
+permissions:
+  contents: read      # To clone the repository
+  packages: read      # To download Docker images from GHCR
+  statuses: write     # To report commit statuses
+  pull-requests: read # Required for pull_request_target to fetch PR metadata
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request_target:
+    branches: [ "master" ]
+
+jobs:
+  super-lint:
+    name: Super Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Checkout the PR head commit when triggered by pull_request_target
+          # Otherwise, checkout the default ref (e.g., the commit that triggered a push)
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+          # Fetch entire history to ensure linters have full context
+          fetch-depth: 0
+      - name: Run Super-Linter
+        uses: github/super-linter@v6
+        env:
+          DEFAULT_BRANCH: "master"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: .
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_PYTHON_PYLINT: false
