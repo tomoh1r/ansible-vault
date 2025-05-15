@@ -34,11 +34,12 @@ class VaultLibABC(object):
 class AnsibleVaultLib(VaultLibABC):
     """Default encrypt/decrypt lib."""
 
-    def __init__(self, secret):
+    def __init__(self, secret, vault_id=None):
+        self.vault_id = vault_id
         self.vault = VaultLib(make_secrets(secret))
 
-    def encrypt(self, plaintext):
-        return self.vault.encrypt(plaintext)
+    def encrypt(self, plaintext, vault_id=None):
+        return self.vault.encrypt(plaintext, vault_id=self.vault_id or vault_id)
 
     def decrypt(self, vaulttext):
         return self.vault.decrypt(vaulttext)
