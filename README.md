@@ -8,7 +8,7 @@ This project aim to R/W an ansible-vault yaml file.
 [![Coverage Status](https://coveralls.io/repos/github/tomoh1r/ansible-vault/badge.svg?branch=master)](https://coveralls.io/github/tomoh1r/ansible-vault?branch=master)
 [![PyPI - Version](https://img.shields.io/pypi/v/ansible-vault)](https://pypi.org/project/ansible-vault/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ansible-vault)
-![ansible-core Support Version](https://img.shields.io/badge/misc-2.16%20%7C%202.17%20%7C%202.18-blue?label=ansible-vault)
+![ansible-core Support Version](https://img.shields.io/badge/misc-2.16%20%7C%202.17%20%7C%202.18-blue?label=ansible-core)
 ![GitHub License](https://img.shields.io/github/license/tomoh1r/ansible-vault)
 
 ---
