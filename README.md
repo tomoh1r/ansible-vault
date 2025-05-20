@@ -11,6 +11,12 @@ This project aim to R/W an ansible-vault yaml file.
 ![ansible-core Support Version](https://img.shields.io/badge/misc-2.16%20%7C%202.17%20%7C%202.18-blue?label=ansible-core)
 ![GitHub License](https://img.shields.io/github/license/tomoh1r/ansible-vault)
 
+If you look forward to, here:
+
+* [ansible-vault command's Official Community Documentation](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
+* [Ansible role to install Hashicorp Vault (ansible-vault role)](https://github.com/ansible-community/ansible-vault)
+* [Ansible Official Github Repository](https://github.com/ansible/ansible)
+
 ---
 
 ## Quick Start
