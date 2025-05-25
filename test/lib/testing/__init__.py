@@ -14,76 +14,89 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+import multiprocessing as mp
 import os
-import shlex
-import subprocess
-import sys
 import tempfile
+from contextlib import contextmanager
+
+from ansible.cli.vault import VaultCLI
 
 
-class AnsibleVaultExecutor(object):
-    def get_version(self):
-        import ansible
+def cli_run(args):
+    """wrapper for per process calling of VaultCLI
 
-        return float(".".join(ansible.__version__.split(".")[:2]))
-
-    def get_executor(self):
-        return os.path.join(os.path.dirname(sys.executable), "ansible-vault")
-
-    def encrypt(self, pass_path, plain_fpath):
-        pass_opt = "vault-password-file"
-        if self.get_version() >= 2.4:
-            pass_opt = "vault-id"
-
-        args = f"encrypt --{pass_opt}={pass_path} {plain_fpath}"
-        subprocess.check_output(shlex.split(" ".join([self.get_executor(), args])))
-
-    def decrypt(self, pass_path, vault_fpath):
-        pass_opt = "vault-password-file"
-        if self.get_version() >= 2.4:
-            pass_opt = "vault-id"
-
-        args = f"decrypt --{pass_opt}={pass_path} {vault_fpath}"
-        subprocess.check_output(shlex.split(" ".join([self.get_executor(), args])))
+    directory calling multiply is causes vault-id condjuction
+    """
+    ctx = mp.get_context("spawn")
+    p = ctx.Process(target=exec_vault_cli, args=(args,))
+    p.start()
+    p.join()
 
 
-def encrypt_text(plaintext, encrypt_key, vault_id=None):
-    _, plain_fpath = tempfile.mkstemp()
-    with open(plain_fpath, "w", encoding="utf-8") as fp:
-        fp.write(plaintext)
+def exec_vault_cli(args):
+    cli = VaultCLI(args=args)
+    cli.parse()
+    cli.run()
 
-    _, pass_path = tempfile.mkstemp()
-    with open(pass_path, "w", encoding="utf-8") as fp:
-        fp.write(encrypt_key)
+
+def cli_encrypt(pass_fpath, plain_fpath, out_fpath):
+    args = [
+        "ansible-vault",
+        "encrypt",
+        "--vault-id",
+        f"dev@{pass_fpath}",
+        "--encrypt-vault-id",
+        "dev",
+        "--output",
+        out_fpath,
+        plain_fpath,
+    ]
+    cli_run(args)
+
+
+def cli_decrypt(pass_fpath, vault_fpath, out_fpath):
+    args = [
+        "ansible-vault",
+        "decrypt",
+        "--vault-id",
+        f"dev@{pass_fpath}",
+        "--output",
+        out_fpath,
+        vault_fpath,
+    ]
+    cli_run(args)
+
+
+@contextmanager
+def prepare_files(content, key):
+    _, content_fpath = tempfile.mkstemp()
+    with open(content_fpath, "w", encoding="utf-8") as fp:
+        is_bytes = isinstance(content, bytes)
+        fp.write(content.decode("utf-8") if is_bytes else content)
+
+    _, pass_fpath = tempfile.mkstemp()
+    with open(pass_fpath, "w", encoding="utf-8") as fp:
+        fp.write(key)
+
+    _, out_fpath = tempfile.mkstemp()
+    with open(out_fpath, "w", encoding="utf-8") as fp:
+        pass
 
     try:
-        AnsibleVaultExecutor().encrypt(pass_path, plain_fpath)
-
-        with open(plain_fpath, "r", encoding="utf-8") as fp:
-            return fp.read()
-
+        yield (content_fpath, pass_fpath, out_fpath)
     finally:
-        os.remove(pass_path)
-        os.remove(plain_fpath)
+        os.remove(out_fpath)
+        os.remove(pass_fpath)
+        os.remove(content_fpath)
+
+
+def encrypt_text(plaintext, encrypt_key):
+    with prepare_files(plaintext, encrypt_key) as (plain_fpath, pass_fpath, out_fpath):
+        cli_encrypt(pass_fpath, plain_fpath, out_fpath)
+        return open(out_fpath, "r", encoding="utf-8").read()
 
 
 def decrypt_text(vaulttext, decrypt_key):
-    _, vault_fpath = tempfile.mkstemp()
-    with open(vault_fpath, "w", encoding="utf-8") as fp:
-        if isinstance(vaulttext, bytes):
-            vaulttext = vaulttext.decode("utf-8")
-        fp.write(vaulttext)
-
-    _, pass_path = tempfile.mkstemp()
-    with open(pass_path, "w", encoding="utf-8") as fp:
-        fp.write(decrypt_key)
-
-    try:
-        AnsibleVaultExecutor().decrypt(pass_path, vault_fpath)
-
-        with open(vault_fpath, "r", encoding="utf-8") as fp:
-            return fp.read()
-
-    finally:
-        os.remove(pass_path)
-        os.remove(vault_fpath)
+    with prepare_files(vaulttext, decrypt_key) as (vault_fpath, pass_fpath, out_fpath):
+        cli_decrypt(pass_fpath, vault_fpath, out_fpath)
+        return open(out_fpath, "r", encoding="utf-8").read()
