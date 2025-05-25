@@ -27,24 +27,22 @@ import pytest
 class TestVaultWithPlainText(object):
     _secret = "password"
 
-    def test_read_from_encrypted_plain_text(
-        self, tmp_path, Vault, encrypt_text, input_str, expected
-    ):
+    def test_read_from_encrypted_plain_text(self, tmp_path, Vault, testing, input_str, expected):
         fpath = str((tmp_path / "vault.txt").absolute())
         with open(fpath, "w", encoding="utf-8") as fp:
-            fp.write(encrypt_text(input_str, self._secret))
+            fp.write(testing.encrypt_text(input_str, self._secret))
 
         with open(fpath, encoding="utf-8") as fp:
             actual = Vault(self._secret).load_raw(fp.read())
         assert actual == expected.encode("utf-8")
 
     def test_encrypt_plain_text_and_write_to_file(
-        self, tmp_path, Vault, decrypt_text, input_str, expected
+        self, tmp_path, Vault, testing, input_str, expected
     ):
         fpath = str((tmp_path / "vault.txt").absolute())
         with open(fpath, "w", encoding="utf-8") as fp:
             Vault(self._secret).dump_raw(input_str.encode("utf-8"), fp)
 
         with open(fpath, encoding="utf-8") as fp:
-            actual = decrypt_text(fp.read(), self._secret)
+            actual = testing.decrypt_text(fp.read(), self._secret)
         assert actual == expected

@@ -15,7 +15,7 @@ If you look forward to, here:
 
 * [ansible-vault command's Official Community Documentation](https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
 * [Ansible role to install Hashicorp Vault (ansible-vault role)](https://github.com/ansible-community/ansible-vault)
-* [Ansible Official Github Repository](https://github.com/ansible/ansible)
+* [Ansible Official GitHub Repository](https://github.com/ansible/ansible)
 
 ---
 

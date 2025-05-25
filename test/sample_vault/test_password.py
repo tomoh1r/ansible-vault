@@ -32,7 +32,7 @@ class TestVault(object):
 
         class Cls(import_module("ansible_vault").VaultLibABC):
             def __init__(self):
-                fpath = os.environ.get("ANSIBLE_VAULT_PASSWORD_FILE")
+                fpath = os.environ["ANSIBLE_VAULT_PASSWORD_FILE"]
                 with open(fpath, "r", encoding="utf-8") as fp:
                     password = fp.read().strip().encode("utf-8")
                 self.vlib = VaultLib(make_secrets(password))
@@ -58,9 +58,9 @@ class TestVault(object):
         inst = Vault(vault_lib=MyVaultLib())
         assert inst.load(vaulted_fp.read()) == "test"
 
-    def test_dump_text(self, monkeypatch, Vault, decrypt_text, MyVaultLib, password_file):
+    def test_dump_text(self, monkeypatch, Vault, testing, MyVaultLib, password_file):
         monkeypatch.setenv("ANSIBLE_VAULT_PASSWORD_FILE", password_file)
 
         inst = Vault(vault_lib=MyVaultLib())
         dumped = inst.dump_raw("test")
-        assert decrypt_text(dumped, self._vault_key) == "test"
+        assert testing.decrypt_text(dumped, self._vault_key) == "test"
