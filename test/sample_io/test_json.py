@@ -23,7 +23,7 @@ import json
 class TestVaultWithJSON(object):
     _secret = "password"
 
-    def test_read_from_encrypted_json(self, tmp_path, Vault, encrypt_text):
+    def test_read_from_encrypted_json(self, tmp_path, Vault, testing):
         json_data = {
             "foo": None,
             "bar": "hoge",
@@ -35,13 +35,13 @@ class TestVaultWithJSON(object):
         input_str = json.dumps(json_data)
         fpath = str((tmp_path / "vault.txt").absolute())
         with open(fpath, "w", encoding="utf-8") as fp:
-            fp.write(encrypt_text(input_str, self._secret))
+            fp.write(testing.encrypt_text(input_str, self._secret))
 
         with open(fpath, encoding="utf-8") as fp:
             actual = json.loads(Vault(self._secret).load_raw(fp.read()).decode("utf-8"))
         assert actual == expected
 
-    def test_encrypt_json_and_write_to_file(self, tmp_path, Vault, decrypt_text):
+    def test_encrypt_json_and_write_to_file(self, tmp_path, Vault, testing):
         json_data = {
             "foo": None,
             "bar": "hoge",
@@ -56,5 +56,5 @@ class TestVaultWithJSON(object):
             Vault(self._secret).dump_raw(input_str, fp)
 
         with open(fpath, encoding="utf-8") as fp:
-            actual = decrypt_text(fp.read(), self._secret)
+            actual = testing.decrypt_text(fp.read(), self._secret)
         assert json.loads(actual) == expected
