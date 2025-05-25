@@ -19,20 +19,17 @@ from __future__ import absolute_import, unicode_literals
 
 import json
 
+import pytest
 
+
+@pytest.mark.parametrize(
+    "expected", [{"foo": None, "bar": "hoge", "baz": [1, 2, 3], "qux": {"fuga": "testあいうえお"}}]
+)
 class TestVaultWithJSON(object):
     _secret = "password"
 
-    def test_read_from_encrypted_json(self, tmp_path, Vault, testing):
-        json_data = {
-            "foo": None,
-            "bar": "hoge",
-            "baz": [1, 2, 3],
-            "qux": {"fuga": "testあいうえお"},
-        }
-        expected = json_data
-
-        input_str = json.dumps(json_data)
+    def test_read_from_encrypted_json(self, tmp_path, Vault, testing, expected):
+        input_str = json.dumps(expected)
         fpath = str((tmp_path / "vault.txt").absolute())
         with open(fpath, "w", encoding="utf-8") as fp:
             fp.write(testing.encrypt_text(input_str, self._secret))
@@ -41,16 +38,8 @@ class TestVaultWithJSON(object):
             actual = json.loads(Vault(self._secret).load_raw(fp.read()).decode("utf-8"))
         assert actual == expected
 
-    def test_encrypt_json_and_write_to_file(self, tmp_path, Vault, testing):
-        json_data = {
-            "foo": None,
-            "bar": "hoge",
-            "baz": [1, 2, 3],
-            "qux": {"fuga": "testあいうえお"},
-        }
-        expected = json_data
-
-        input_str = json.dumps(json_data).encode("utf-8")
+    def test_encrypt_json_and_write_to_file(self, tmp_path, Vault, testing, expected):
+        input_str = json.dumps(expected).encode("utf-8")
         fpath = str((tmp_path / "vault.txt").absolute())
         with open(fpath, "w", encoding="utf-8") as fp:
             Vault(self._secret).dump_raw(input_str, fp)

@@ -29,22 +29,19 @@ class TestVaultLoadRaw(object):
 
 
 class TestVaultDumpRaw(object):
+    _plaintext = "test"
+    _secret = "password"
+
     def test_dump_file(self, tmpdir, Vault, testing):
-        plaintext = "test"
-        secret = "password"
-
         fp = tmpdir.join("vault.txt")
-        Vault(secret).dump_raw(plaintext, fp)
+        Vault(self._secret).dump_raw(self._plaintext, fp)
 
-        assert testing.decrypt_text(fp.read(), secret) == plaintext
+        assert testing.decrypt_text(fp.read(), self._secret) == self._plaintext
 
     def test_dump_text(self, Vault, testing):
-        plaintext = "test"
-        secret = "password"
+        dumped = Vault(self._secret).dump_raw(self._plaintext)
 
-        dumped = Vault(secret).dump_raw(plaintext)
-
-        assert testing.decrypt_text(dumped, secret) == plaintext
+        assert testing.decrypt_text(dumped, self._secret) == self._plaintext
 
 
 class TestVaultLoad(object):
@@ -54,24 +51,21 @@ class TestVaultLoad(object):
 
 
 class TestVaultDump(object):
-    def test_dump_file(self, tmpdir, Vault, testing):
-        plaintext = "test"
-        secret = "password"
+    _plaintext = "test"
+    _secret = "password"
 
+    def test_dump_file(self, tmpdir, Vault, testing):
         fp = tmpdir.join("vault.txt")
-        Vault(secret).dump(plaintext, fp)
+        Vault(self._secret).dump(self._plaintext, fp)
 
         expected = "test\n...\n"
-        assert testing.decrypt_text(fp.read(), secret) == expected
+        assert testing.decrypt_text(fp.read(), self._secret) == expected
 
     def test_dump_text(self, Vault, testing):
-        plaintext = "test"
-        secret = "password"
-
-        dumped = Vault(secret).dump(plaintext)
+        dumped = Vault(self._secret).dump(self._plaintext)
 
         expected = "test\n...\n"
-        assert testing.decrypt_text(dumped, secret) == expected
+        assert testing.decrypt_text(dumped, self._secret) == expected
 
     @pytest.mark.parametrize(
         "kwargs,expected",
@@ -82,11 +76,8 @@ class TestVaultDump(object):
         ],
     )
     def test_dump_additional_parameters(self, Vault, testing, kwargs, expected):
-        plaintext = "test"
-        secret = "password"
-
-        default_style_dumped = Vault(secret).dump(plaintext, **kwargs)
-        assert testing.decrypt_text(default_style_dumped, secret) == expected
+        default_style_dumped = Vault(self._secret).dump(self._plaintext, **kwargs)
+        assert testing.decrypt_text(default_style_dumped, self._secret) == expected
 
 
 class TestCannotLoadWithInvalidPassword(object):
