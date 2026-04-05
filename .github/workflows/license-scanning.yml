@@ -14,9 +14,11 @@ jobs:
   build:
     name: License Scan
     runs-on: ubuntu-latest
+    env:
+      FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Python
         id: setup_python
         uses: actions/setup-python@v5
@@ -45,4 +47,4 @@ jobs:
         uses: fossas/fossa-action@v1
         with:
           api-key: ${{ secrets.FOSSA_API_KEY }}
-        if: ${{ secrets.FOSSA_API_KEY != '' }}
+        if: ${{ env.FOSSA_API_KEY != '' }}

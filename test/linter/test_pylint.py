@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-import os
 import sys
 from io import StringIO
+from pathlib import Path
 
 import pytest
 from pylint import lint
@@ -29,10 +29,13 @@ def test_pylint(chdir_root_path):
     assert that no errors are reported.
     """
     # Path to your pylintrc
-    rcfile = os.path.abspath(".pylintrc")
+    _parent = Path(__file__).parent.parent.parent.absolute()
+    rcfile = str(_parent / ".pylintrc")
 
     # Prepare arguments for lint.Run: [--rcfile, path, --score, no, target]
-    args = ["--rcfile", rcfile, "--score", "no", "ansible_vault", "test/*"]
+    srcpath = str(_parent / "ansible_vault")
+    testpath = str(_parent / "test" / "*")
+    args = ["--rcfile", rcfile, "--score", "no", srcpath, testpath]
 
     # Capture stdout/stderr
     old_stdout, old_stderr = sys.stdout, sys.stderr

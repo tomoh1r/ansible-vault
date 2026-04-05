@@ -17,6 +17,8 @@ on:
 jobs:
   unittest:
     runs-on: ${{ matrix.os }}
+    env:
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
     strategy:
       matrix:
         os: ['ubuntu-22.04']
@@ -45,7 +47,7 @@ jobs:
             lint-code: true
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Python
         id: setup_python
         uses: actions/setup-python@v5
@@ -78,4 +80,4 @@ jobs:
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
           COVERALLS_COVERAGE_FILE: _reports/coverage-${{ matrix.python-version }}.xml
-        if: ${{ matrix.lint-code && secrets.COVERALLS_REPO_TOKEN != '' }}
+        if: ${{ matrix.lint-code && env.COVERALLS_REPO_TOKEN != '' }}
