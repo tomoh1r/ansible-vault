@@ -2,24 +2,23 @@ name: License Scanning
 
 permissions:
   contents: read      # To checkout the repository
-  pull-requests: read # To read PR metadata for pull_request_target triggers
+  pull-requests: read # To read PR metadata for pull_request triggers
 
 on:
   push:
     branches: [ "master" ]
-  pull_request_target:
+  pull_request:
     branches: [ "master" ]
 
 jobs:
   build:
     name: License Scan
     runs-on: ubuntu-latest
+    env:
+      FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
-
+        uses: actions/checkout@v6
       - name: Setup Python
         id: setup_python
         uses: actions/setup-python@v5
@@ -48,3 +47,4 @@ jobs:
         uses: fossas/fossa-action@v1
         with:
           api-key: ${{ secrets.FOSSA_API_KEY }}
+        if: ${{ env.FOSSA_API_KEY != '' }}

@@ -3,6 +3,7 @@
 A simple script to clean up Python build artifacts from the current directory.
 Removes 'build/', 'dist/', and any '*.egg-info/' directories or files.
 """
+
 import shutil
 from pathlib import Path
 
